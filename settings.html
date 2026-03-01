@@ -2,81 +2,187 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Настройки — Vistora</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 80px auto 20px;
+            padding: 20px;
+        }
+        
+        .settings-section {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .settings-section h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+        
+        .settings-item label {
+            color: var(--text-secondary);
+        }
+        
+        .settings-item input[type="text"],
+        .settings-item input[type="email"] {
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-primary);
+            width: 300px;
+        }
+        
+        .settings-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .save-settings-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-<header class="header">
-    <a href="index.html" class="logo">Vistora</a>
-    <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Поиск по видео...">
-        <button class="search-btn">🔎</button>
-    </div>
-    <div class="nav" id="nav"></div>
-</header>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <i class="fas fa-play-circle"></i>
+                Vistora
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="user-avatar" onclick="location.href='profile.html'">
+                <img src="https://via.placeholder.com/32" alt="User">
+            </div>
+        </div>
+    </header>
 
-<aside class="sidebar">
-    <nav>
-        <a href="index.html" class="sidebar-link">🏠 Главная</a>
-        <a href="#" class="sidebar-link">🔍 Поиск</a>
-        <a href="#" class="sidebar-link">📺 Короткие</a>
-        <a href="#" class="sidebar-link">📚 Подписки</a>
-        <hr>
-        <a href="#" class="sidebar-link">📜 История</a>
-        <a href="#" class="sidebar-link">❤️ Избранное</a>
-        <a href="#" class="sidebar-link">📥 Скачанные</a>
-        <hr>
-        <a href="profile.html" class="sidebar-link">👤 Вы</a>
-        <a href="settings.html" class="sidebar-link active">⚙️ Настройки</a>
-    </nav>
-</aside>
-
-<main class="main-content" style="margin-left:260px; padding:100px 40px;">
-    <div style="max-width:1000px; margin:auto; background:#111; border-radius:24px; padding:40px;">
-        <h1 style="font-size:42px; color:#ffd700;">⚙️ Настройки</h1>
+    <div class="settings-container">
+        <h1>Настройки</h1>
         
-        <div class="tabs">
-            <button onclick="showTab(0)" class="tab-btn active">👤 Мои данные</button>
-            <button onclick="showTab(1)" class="tab-btn" id="adminTab" style="display:none;">🔧 Админ-панель</button>
+        <div class="settings-section">
+            <h2>Профиль</h2>
+            <div class="settings-item">
+                <label>Имя</label>
+                <input type="text" id="userName">
+            </div>
+            <div class="settings-item">
+                <label>Email</label>
+                <input type="email" id="userEmail">
+            </div>
         </div>
-
-        <div id="tab0" style="margin-top:30px;">
-            <div id="userInfo" style="font-size:18px; line-height:1.8;"></div>
+        
+        <div class="settings-section">
+            <h2>Уведомления</h2>
+            <div class="settings-item">
+                <label>Уведомления о новых видео</label>
+                <input type="checkbox" id="notifyNew">
+            </div>
+            <div class="settings-item">
+                <label>Уведомления о комментариях</label>
+                <input type="checkbox" id="notifyComments">
+            </div>
         </div>
-
-        <div id="tab1" style="display:none; margin-top:30px;">
-            <h2>Управление пользователями</h2>
-            <table id="usersTable" style="width:100%; border-collapse:collapse; margin-bottom:40px;"></table>
-            
-            <h2>Управление видео</h2>
-            <button onclick="addNewVideo()" style="background:#ff0055; padding:12px 24px; border:none; border-radius:30px; color:white;">+ Добавить новое видео</button>
-            <table id="videosTable" style="width:100%; border-collapse:collapse;"></table>
+        
+        <div class="settings-section">
+            <h2>Безопасность</h2>
+            <div class="settings-item">
+                <label>Новый пароль</label>
+                <input type="password" id="newPassword">
+            </div>
+            <div class="settings-item">
+                <label>Подтвердите пароль</label>
+                <input type="password" id="confirmPassword">
+            </div>
         </div>
+        
+        <button class="save-settings-btn" onclick="saveSettings()">
+            Сохранить изменения
+        </button>
     </div>
-</main>
 
-<script src="script.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    updateHeader();
-    const user = getCurrentUser();
-    if (!user) return location.href = 'login.html';
-
-    document.getElementById('userInfo').innerHTML = `
-        <p><strong>Имя:</strong> ${user.username}</p>
-        <p><strong>Email:</strong> ${user.email}</p>
-    `;
-
-    if (isAdmin()) {
-        document.getElementById('adminTab').style.display = 'inline-block';
-        showTab(1);
-    }
-});
-
-function showTab(n) {
-    document.getElementById('tab0').style.display = n===0 ? 'block' : 'none';
-    document.getElementById('tab1').style.display = n===1 ? 'block' : 'none';
-}
-</script>
+    <script>
+        let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        
+        if (!currentUser.id) {
+            window.location.href = 'login.html';
+        }
+        
+        // Загружаем текущие настройки
+        document.getElementById('userName').value = currentUser.name || '';
+        document.getElementById('userEmail').value = currentUser.email || '';
+        
+        const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+        document.getElementById('notifyNew').checked = settings.notifyNew || false;
+        document.getElementById('notifyComments').checked = settings.notifyComments || false;
+        
+        function saveSettings() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const notifyNew = document.getElementById('notifyNew').checked;
+            const notifyComments = document.getElementById('notifyComments').checked;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                alert('Пароли не совпадают!');
+                return;
+            }
+            
+            // Обновляем пользователя
+            let users = JSON.parse(localStorage.getItem('users') || '[]');
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            
+            if (userIndex !== -1) {
+                users[userIndex].name = name;
+                users[userIndex].email = email;
+                if (newPassword) {
+                    users[userIndex].password = newPassword;
+                }
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            // Обновляем текущего пользователя
+            currentUser.name = name;
+            currentUser.email = email;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Сохраняем настройки
+            const settings = {
+                notifyNew,
+                notifyComments
+            };
+            localStorage.setItem('settings', JSON.stringify(settings));
+            
+            alert('Настройки сохранены!');
+        }
+    </script>
 </body>
 </html>

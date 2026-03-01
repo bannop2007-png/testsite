@@ -2,63 +2,235 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Профиль — Vistora</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль — Vistora</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 80px auto 20px;
+            padding: 20px;
+        }
+        
+        .profile-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-info h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+            margin: 15px 0;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .profile-stat .number {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .profile-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .profile-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .profile-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-<header class="header">
-    <div class="logo">Vistora</div>
-    <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Поиск видео...">
-        <button class="search-btn">🔎</button>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <i class="fas fa-play-circle"></i>
+                Vistora
+            </a>
+        </div>
+        <div class="search-container">
+            <form class="search-form">
+                <input type="text" placeholder="Поиск">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+        <div class="header-right">
+            <button class="create-btn" onclick="location.href='upload.html'">
+                <i class="fas fa-video"></i>
+            </button>
+            <div class="user-avatar" onclick="location.href='profile.html'">
+                <img src="https://via.placeholder.com/32" alt="User">
+            </div>
+        </div>
+    </header>
+
+    <div class="profile-container" id="profileContainer">
+        <!-- Загружается через JS -->
     </div>
-    <div class="nav" id="nav"></div>
-</header>
 
-<aside class="sidebar">
-    <!-- тот же сайдбар как в index.html -->
-    <nav>
-        <a href="index.html" class="sidebar-link">🏠 Главная</a>
-        <a href="#" class="sidebar-link">🔍 Поиск</a>
-        <a href="#" class="sidebar-link">📺 Короткие</a>
-        <a href="#" class="sidebar-link">📚 Подписки</a>
-        <hr>
-        <a href="#" class="sidebar-link">📜 История</a>
-        <a href="#" class="sidebar-link">❤️ Избранное</a>
-        <a href="#" class="sidebar-link">📥 Скачанные</a>
-        <hr>
-        <a href="profile.html" class="sidebar-link active">👤 Вы</a>
-        <a href="#" class="sidebar-link">⚙️ Настройки</a>
-    </nav>
-</aside>
-
-<main class="main-content" style="margin-left:240px; padding:80px 40px;">
-    <div style="max-width:800px; margin:0 auto; background:#181818; padding:40px; border-radius:16px;">
-        <h1>👤 Мой профиль</h1>
-        <div id="profileInfo" style="font-size:18px; line-height:1.8;"></div>
+    <script>
+        let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
         
-        <button onclick="logout()" style="margin-top:30px; padding:12px 30px; background:#ff0000; color:white; border:none; border-radius:20px; font-size:16px; cursor:pointer;">
-            Выйти из аккаунта
-        </button>
-    </div>
-</main>
-
-<script src="script.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const user = getCurrentUser();
-    if (!user) {
-        location.href = 'login.html';
-        return;
-    }
-    document.getElementById('profileInfo').innerHTML = `
-        <p><strong>Имя:</strong> ${user.username}</p>
-        <p><strong>Email:</strong> ${user.email}</p>
-        <p><strong>Роль:</strong> ${user.role === 'admin' ? 'Администратор 🔥' : 'Пользователь'}</p>
-        <p><strong>Зарегистрирован:</strong> ${new Date(user.id).toLocaleDateString('ru-RU')}</p>
-    `;
-    updateHeader(); // обновит шапку
-});
-</script>
+        if (!currentUser.id) {
+            window.location.href = 'login.html';
+        }
+        
+        function loadProfile() {
+            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
+            const history = JSON.parse(localStorage.getItem('history') || '[]');
+            const saved = JSON.parse(localStorage.getItem('savedVideos') || '[]');
+            const subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '[]');
+            
+            const userVideos = videos.filter(v => v.channelId === currentUser.id);
+            const historyVideos = videos.filter(v => history.includes(v.id));
+            const savedVideos = videos.filter(v => saved.includes(v.id));
+            
+            document.getElementById('profileContainer').innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <img src="${currentUser.avatar || 'https://via.placeholder.com/120'}" alt="Avatar">
+                    </div>
+                    <div class="profile-info">
+                        <h2>${currentUser.name || 'Пользователь'}</h2>
+                        <p>${currentUser.email || ''}</p>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <div class="number">${userVideos.length}</div>
+                                <div>Видео</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="number">${subscriptions.length}</div>
+                                <div>Подписки</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="number">${saved.length}</div>
+                                <div>Сохранено</div>
+                            </div>
+                        </div>
+                        <button class="action-btn edit-btn" onclick="location.href='settings.html'">
+                            <i class="fas fa-cog"></i> Настройки
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="profile-tabs">
+                    <button class="profile-tab active" onclick="showProfileTab('videos')">Мои видео</button>
+                    <button class="profile-tab" onclick="showProfileTab('history')">История</button>
+                    <button class="profile-tab" onclick="showProfileTab('saved')">Сохранённые</button>
+                    <button class="profile-tab" onclick="showProfileTab('subscriptions')">Подписки</button>
+                </div>
+                
+                <div id="profileContent">
+                    ${renderVideosGrid(userVideos, 'Вы ещё не загрузили видео')}
+                </div>
+            `;
+        }
+        
+        function showProfileTab(tab) {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
+            const history = JSON.parse(localStorage.getItem('history') || '[]');
+            const saved = JSON.parse(localStorage.getItem('savedVideos') || '[]');
+            const subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '[]');
+            
+            let content = '';
+            
+            if (tab === 'videos') {
+                const userVideos = videos.filter(v => v.channelId === currentUser.id);
+                content = renderVideosGrid(userVideos, 'Вы ещё не загрузили видео');
+            } else if (tab === 'history') {
+                const historyVideos = videos.filter(v => history.includes(v.id));
+                content = renderVideosGrid(historyVideos, 'История пуста');
+            } else if (tab === 'saved') {
+                const savedVideos = videos.filter(v => saved.includes(v.id));
+                content = renderVideosGrid(savedVideos, 'Нет сохранённых видео');
+            } else if (tab === 'subscriptions') {
+                const subVideos = videos.filter(v => subscriptions.includes(v.channelId));
+                content = renderVideosGrid(subVideos, 'Нет новых видео от подписок');
+            }
+            
+            document.getElementById('profileContent').innerHTML = content;
+        }
+        
+        function renderVideosGrid(videos, emptyMessage) {
+            if (videos.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <i class="fas fa-video"></i>
+                        <h3>${emptyMessage}</h3>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="videos-grid">
+                    ${videos.map(v => `
+                        <a href="video.html?id=${v.id}" class="video-card">
+                            <div class="video-thumbnail">
+                                <img src="${v.thumbnail}">
+                                <span class="video-duration">${v.duration}</span>
+                            </div>
+                            <div class="video-info">
+                                <h4>${v.title}</h4>
+                                <p>${v.channel}</p>
+                                <span>${v.views} просмотров</span>
+                            </div>
+                        </a>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        loadProfile();
+    </script>
 </body>
 </html>

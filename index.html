@@ -1,16 +1,14 @@
-<!-- index.html — ОБНОВЛЁННЫЙ (замени полностью) -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Vistora — Элитный видеохостинг</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Премиум-шрифты (Inter + Playfair) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 <header class="header">
-    <div class="logo">Vistora</div>
+    <a href="index.html" class="logo">Vistora</a>
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Поиск по видео...">
         <button class="search-btn">🔎</button>
@@ -18,67 +16,14 @@
     <div class="nav" id="nav"></div>
 </header>
 
-<aside class="sidebar">
-    <nav>
-        <a href="index.html" class="sidebar-link active">🏠 Главная</a>
-        <a href="#" class="sidebar-link">🔍 Поиск</a>
-        <a href="#" class="sidebar-link">📺 Короткие</a>
-        <a href="#" class="sidebar-link">📚 Подписки</a>
-        <hr>
-        <a href="#" class="sidebar-link">📜 История</a>
-        <a href="#" class="sidebar-link">❤️ Избранное</a>
-        <a href="#" class="sidebar-link">📥 Скачанные</a>
-        <hr>
-        <a href="profile.html" class="sidebar-link">👤 Вы</a>
-        <a href="settings.html" class="sidebar-link">⚙️ Настройки</a>
-    </nav>
-</aside>
+<aside class="sidebar"> ... (тот же как раньше) </aside>
 
 <main class="main-content">
-    <!-- Категории -->
-    <div class="categories">
-        <span class="category-chip active">Все</span>
-        <span class="category-chip">Программирование</span>
-        <span class="category-chip">Музыка</span>
-        <span class="category-chip">Игры</span>
-        <span class="category-chip">Новости</span>
-        <span class="category-chip">Спорт</span>
-        <span class="category-chip">Фильмы</span>
-    </div>
-
-    <!-- Сортировка (элитный стиль) -->
-    <div class="sort-bar">
-        <span>Сортировать:</span>
-        <select id="sortSelect">
-            <option value="new">Новизна</option>
-            <option value="popular">Популярность</option>
-            <option value="views">Просмотры</option>
-        </select>
-    </div>
-
-    <!-- Видео-сетка -->
+    <div class="categories"> ... (те же чипы) </div>
+    <div class="sort-bar">Сортировать: <select id="sortSelect"><option value="new">Новизна</option></select></div>
     <div class="video-grid" id="videoGrid"></div>
 </main>
 
 <script src="script.js"></script>
-<script>
-// Лёгкая сортировка прямо здесь (без изменения script.js)
-document.addEventListener('DOMContentLoaded', () => {
-    const sortSelect = document.getElementById('sortSelect');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', () => {
-            const cards = Array.from(document.querySelectorAll('.video-card'));
-            const value = sortSelect.value;
-            
-            if (value === 'new') cards.sort((a,b) => b.dataset.time - a.dataset.time);
-            else if (value === 'popular') cards.sort((a,b) => b.dataset.views - a.dataset.views);
-            else if (value === 'views') cards.sort((a,b) => b.dataset.views - a.dataset.views);
-            
-            const grid = document.getElementById('videoGrid');
-            cards.forEach(card => grid.appendChild(card));
-        });
-    }
-});
-</script>
 </body>
 </html>

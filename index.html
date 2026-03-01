@@ -1,21 +1,147 @@
 <!DOCTYPE html>
-<html> 
+<html lang="ru">
 <head>
-    <title>Добро пожаловать в мой ТЕСТ!(овый)-Сайт</title>
+    <meta charset="UTF-8">
+    <title>YouTube Mini</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #0f0f0f;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #202020;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .search input {
+            padding: 8px;
+            width: 300px;
+            border-radius: 20px;
+            border: none;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #181818;
+            padding: 20px;
+        }
+
+        .sidebar p {
+            margin: 15px 0;
+            cursor: pointer;
+        }
+
+        .videos {
+            flex: 1;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .video-card {
+            background-color: #202020;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .video-card:hover {
+            transform: scale(1.03);
+        }
+
+        .thumbnail {
+            background-color: gray;
+            height: 150px;
+        }
+
+        .video-info {
+            padding: 10px;
+        }
+
+        .video-title {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .channel {
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- Тут Всегда только Текст и др -->
+<header>
+    <div class="logo">YouTube Mini</div>
+    <div class="search">
+        <input type="text" placeholder="Поиск...">
+    </div>
+</header>
 
-    <header>
-         <h1>Добро пожаловать в мой первый сайт с помошю ChatGPT</h1>
-         <p>Привет я начинаю с сегодняшняго дня научаться читать писать и учить код с помошю ChatGpt</p>
-    </header>
+<div class="container">
+    <div class="sidebar">
+        <p>Главная</p>
+        <p>Подписки</p>
+        <p>Тренды</p>
+        <p>Музыка</p>
+        <p>Игры</p>
+    </div>
 
-    <folder>
-      <p>© 2026 Мой сайт</p>
-    </folder>
+    <div class="videos">
 
+        <div class="video-card">
+            <div class="thumbnail"></div>
+            <div class="video-info">
+                <div class="video-title">Как я учу HTML с нуля</div>
+                <div class="channel">Islam Dev</div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <div class="thumbnail"></div>
+            <div class="video-info">
+                <div class="video-title">Создание первого сайта</div>
+                <div class="channel">Code Start</div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <div class="thumbnail"></div>
+            <div class="video-info">
+                <div class="video-title">CSS для начинающих</div>
+                <div class="channel">Frontend Life</div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <div class="thumbnail"></div>
+            <div class="video-info">
+                <div class="video-title">JavaScript через 30 дней</div>
+                <div class="channel">JS Master</div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>

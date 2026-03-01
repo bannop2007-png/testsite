@@ -1,0 +1,33 @@
+<!-- header -->
+<div class="admin-panel">
+    <h2>🔧 Админ-панель</h2>
+    <div class="tabs">
+        <button onclick="showTab(0)" class="tab-btn active">Пользователи</button>
+        <button onclick="showTab(1)" class="tab-btn">Видео</button>
+    </div>
+    <div id="tabContent">
+        <!-- Заполняется JS -->
+    </div>
+</div>
+<script src="script.js"></script>
+<script>
+if (!isAdmin()) { location.href = 'index.html'; }
+function showTab(n) {
+    // простая вкладка Пользователи
+    let html = '<h3>Все пользователи</h3><table><tr><th>ID</th><th>Имя</th><th>Email</th><th>Действия</th></tr>';
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    users.forEach(u => {
+        html += `<tr><td>${u.id}</td><td>${u.username}</td><td>${u.email}</td>
+        <td><button onclick="deleteUser(${u.id})">Удалить</button></td></tr>`;
+    });
+    html += '</table>';
+    document.getElementById('tabContent').innerHTML = html;
+}
+window.deleteUser = function(id) {
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    users = users.filter(u => u.id !== id);
+    localStorage.setItem('users', JSON.stringify(users));
+    showTab(0);
+};
+showTab(0);
+</script>

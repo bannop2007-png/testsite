@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История просмотров — Vistora</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <i class="fas fa-play-circle"></i>
+                Vistora
+            </a>
+        </div>
+        <div class="search-container">
+            <form class="search-form">
+                <input type="text" placeholder="Поиск">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+        <div class="header-right">
+            <div class="user-avatar" onclick="location.href='profile.html'">
+                <img src="https://via.placeholder.com/32" alt="User">
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content" style="margin-left: 0; padding: 80px 20px 20px;">
+        <h1 style="margin-bottom: 30px;">История просмотров</h1>
+        
+        <div class="videos-grid" id="historyGrid">
+            <!-- Загружается через JS -->
+        </div>
+        
+        <button class="load-more-btn" onclick="clearHistory()">
+            <i class="fas fa-trash"></i> Очистить историю
+        </button>
+    </div>
+
+    <script>
+        function loadHistory() {
+            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
+            const history = JSON.parse(localStorage.getItem('history') || '[]');
+            
+            const historyVideos = history
+                .map(id => videos.find(v => v.id === id))
+                .filter(v => v);
+            
+            const grid = document.getElementById('historyGrid');
+            
+            if (historyVideos.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">История пуста</p>';
+                return;
+            }
+            
+            grid.innerHTML = historyVideos.map(v => `
+                <a href="video.html?id=${v.id}" class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="${v.thumbnail}">
+                        <span class="video-duration">${v.duration}</span>
+                    </div>
+                    <div class="video-info">
+                        <h4>${v.title}</h4>
+                        <p>${v.channel}</p>
+                        <span>${v.views} просмотров</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+        
+        function clearHistory() {
+            if (confirm('Очистить историю просмотров?')) {
+                localStorage.setItem('history', JSON.stringify([]));
+                loadHistory();
+            }
+        }
+        
+        loadHistory();
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Библиотека — Vistora</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .library-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .library-card {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .library-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+        
+        .library-card i {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .library-card h3 {
+            margin-bottom: 10px;
+        }
+        
+        .library-card p {
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <i class="fas fa-play-circle"></i>
+                Vistora
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="user-avatar" onclick="location.href='profile.html'">
+                <img src="https://via.placeholder.com/32" alt="User">
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content" style="margin-left: 0; padding: 80px 20px 20px;">
+        <h1 style="margin-bottom: 30px;">Библиотека</h1>
+        
+        <div class="library-sections">
+            <div class="library-card" onclick="location.href='history.html'">
+                <i class="fas fa-history"></i>
+                <h3>История</h3>
+                <p>Просмотренные видео</p>
+            </div>
+            
+            <div class="library-card" onclick="location.href='playlists.html'">
+                <i class="fas fa-list"></i>
+                <h3>Плейлисты</h3>
+                <p>Ваши подборки</p>
+            </div>
+            
+            <div class="library-card" onclick="location.href='liked.html'">
+                <i class="fas fa-thumbs-up"></i>
+                <h3>Понравившиеся</h3>
+                <p>Видео, которые вам понравились</p>
+            </div>
+            
+            <div class="library-card" onclick="location.href='saved.html'">
+                <i class="fas fa-bookmark"></i>
+                <h3>Сохранённые</h3>
+                <p>Смотреть позже</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

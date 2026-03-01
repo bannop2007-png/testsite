@@ -14,7 +14,6 @@
             justify-content: center;
             background: linear-gradient(135deg, var(--bg-primary), #000);
         }
-        
         .auth-box {
             width: 100%;
             max-width: 400px;
@@ -23,17 +22,10 @@
             border-radius: 20px;
             border: 1px solid var(--border-color);
         }
-        
-        .auth-box h2 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
         .auth-form {
             display: grid;
             gap: 15px;
         }
-        
         .auth-form input {
             padding: 15px;
             background: var(--bg-primary);
@@ -41,7 +33,6 @@
             border-radius: 10px;
             color: var(--text-primary);
         }
-        
         .auth-form button {
             padding: 15px;
             background: var(--primary-color);
@@ -51,34 +42,27 @@
             font-weight: bold;
             cursor: pointer;
         }
-        
-        .auth-links {
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .auth-links a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
     </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-box">
-            <h2>Регистрация в Vistora</h2>
+            <h2 style="text-align: center; margin-bottom: 30px;">
+                <i class="fas fa-play-circle" style="color: var(--primary-color);"></i>
+                Vistora
+            </h2>
             
             <form class="auth-form" onsubmit="register(event)">
                 <input type="text" placeholder="Имя" id="name" required>
                 <input type="email" placeholder="Email" id="email" required>
                 <input type="password" placeholder="Пароль" id="password" required>
                 <input type="password" placeholder="Подтвердите пароль" id="confirm" required>
-                <div class="error-message" id="error"></div>
+                <div id="error" style="color: var(--primary-color); text-align: center;"></div>
                 <button type="submit">Зарегистрироваться</button>
             </form>
             
-            <div class="auth-links">
-                <a href="login.html">Уже есть аккаунт? Войти</a>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="login.html" style="color: var(--primary-color); text-decoration: none;">Уже есть аккаунт? Войти</a>
             </div>
         </div>
     </div>
@@ -110,8 +94,7 @@
                 email: email,
                 password: password,
                 role: 'user',
-                avatar: 'https://via.placeholder.com/100',
-                joinDate: new Date().toISOString()
+                avatar: 'https://via.placeholder.com/100'
             };
             
             users.push(newUser);

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои подписки — Vistora</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <i class="fas fa-play-circle"></i>
+                Vistora
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="user-avatar" onclick="location.href='profile.html'">
+                <img src="https://via.placeholder.com/32" alt="User">
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content" style="margin-left: 0; padding: 80px 20px 20px;">
+        <h1 style="margin-bottom: 30px;">Мои подписки</h1>
+        
+        <div class="videos-grid" id="subscriptionsGrid"></div>
+    </div>
+
+    <script>
+        function loadSubscriptions() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
+            const subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '[]');
+            
+            const subVideos = videos
+                .filter(v => subscriptions.includes(v.channelId))
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            const grid = document.getElementById('subscriptionsGrid');
+            
+            if (subVideos.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Вы ещё не подписаны ни на один канал</p>';
+                return;
+            }
+            
+            grid.innerHTML = subVideos.map(v => `
+                <a href="video.html?id=${v.id}" class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="${v.thumbnail}">
+                        <span class="video-duration">${v.duration}</span>
+                    </div>
+                    <div class="video-info">
+                        <h4>${v.title}</h4>
+                        <p>${v.channel}</p>
+                        <span>${v.views} просмотров</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+        
+        loadSubscriptions();
+    </script>
+</body>
+</html>

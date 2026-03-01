@@ -1,1 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Просмотр — Vistora</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .player { width:100%; max-width:900px; margin:40px auto; background:#000; border-radius:16px; overflow:hidden; }
+        video { width:100%; display:block; }
+    </style>
+</head>
+<body>
+<header class="header">... (скопируй header как в profile.html) ...</header>
+<aside class="sidebar">... (скопируй сайдбар) ...</aside>
 
+<main class="main-content" style="margin-left:240px; padding:80px 40px;">
+    <div class="player">
+        <video id="videoPlayer" controls autoplay>
+            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div style="max-width:900px; margin:20px auto; color:white;">
+        <h2 id="videoTitle">Загрузка названия...</h2>
+        <p id="videoDesc">Описание видео...</p>
+    </div>
+</main>
+
+<script src="script.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const id = params.get('id') || '1';
+
+const videos = {
+    '1': {title: 'Как я начал программировать в 2026', desc: 'Полная история Islam Dev'},
+    '2': {title: 'Создание сайта с нуля за 1 час', desc: 'Frontend Life'},
+    '3': {title: 'CSS за 30 минут — Мастер-класс', desc: 'Code Start'}
+};
+
+document.getElementById('videoTitle').textContent = videos[id].title;
+document.getElementById('videoDesc').textContent = videos[id].desc;
+
+updateHeader();
+</script>
+</body>
+</html>

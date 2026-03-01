@@ -1,45 +1,41 @@
+<!-- index.html — ОБНОВЛЁННЫЙ (замени полностью) -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Vistora</title>
+    <title>Vistora — Элитный видеохостинг</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Премиум-шрифты (Inter + Playfair) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
 </head>
 <body>
 <header class="header">
     <div class="logo">Vistora</div>
-    
-    <!-- Поисковая строка (как в YouTube) -->
     <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Поиск видео...">
+        <input type="text" id="searchInput" placeholder="Поиск по видео...">
         <button class="search-btn">🔎</button>
     </div>
-
-    <div class="nav" id="nav">
-        <button id="themeToggle">🌙</button>
-        <!-- Здесь будет динамически подставляться: Войти / Профиль / Админ / Выйти -->
-    </div>
+    <div class="nav" id="nav"></div>
 </header>
 
-<!-- Сайдбар (как в настоящем YouTube) -->
 <aside class="sidebar">
     <nav>
         <a href="index.html" class="sidebar-link active">🏠 Главная</a>
-        <a href="index.html" class="sidebar-link">🔍 Поиск</a>
-        <a href="index.html" class="sidebar-link">📺 Короткие</a>
-        <a href="index.html" class="sidebar-link">📚 Подписки</a>
+        <a href="#" class="sidebar-link">🔍 Поиск</a>
+        <a href="#" class="sidebar-link">📺 Короткие</a>
+        <a href="#" class="sidebar-link">📚 Подписки</a>
         <hr>
-        <a href="index.html" class="sidebar-link">📜 История</a>
-        <a href="index.html" class="sidebar-link">❤️ Избранное</a>
-        <a href="index.html" class="sidebar-link">📥 Скачанные</a>
+        <a href="#" class="sidebar-link">📜 История</a>
+        <a href="#" class="sidebar-link">❤️ Избранное</a>
+        <a href="#" class="sidebar-link">📥 Скачанные</a>
         <hr>
         <a href="profile.html" class="sidebar-link">👤 Вы</a>
-        <a href="index.html" class="sidebar-link">⚙️ Настройки</a>
+        <a href="settings.html" class="sidebar-link">⚙️ Настройки</a>
     </nav>
 </aside>
 
 <main class="main-content">
-    <!-- Категории (чипы) -->
+    <!-- Категории -->
     <div class="categories">
         <span class="category-chip active">Все</span>
         <span class="category-chip">Программирование</span>
@@ -50,12 +46,39 @@
         <span class="category-chip">Фильмы</span>
     </div>
 
-    <!-- Сетка видео -->
-    <div class="video-grid" id="videoGrid">
-        <!-- Заполняется через JS или статично -->
+    <!-- Сортировка (элитный стиль) -->
+    <div class="sort-bar">
+        <span>Сортировать:</span>
+        <select id="sortSelect">
+            <option value="new">Новизна</option>
+            <option value="popular">Популярность</option>
+            <option value="views">Просмотры</option>
+        </select>
     </div>
+
+    <!-- Видео-сетка -->
+    <div class="video-grid" id="videoGrid"></div>
 </main>
 
 <script src="script.js"></script>
+<script>
+// Лёгкая сортировка прямо здесь (без изменения script.js)
+document.addEventListener('DOMContentLoaded', () => {
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            const cards = Array.from(document.querySelectorAll('.video-card'));
+            const value = sortSelect.value;
+            
+            if (value === 'new') cards.sort((a,b) => b.dataset.time - a.dataset.time);
+            else if (value === 'popular') cards.sort((a,b) => b.dataset.views - a.dataset.views);
+            else if (value === 'views') cards.sort((a,b) => b.dataset.views - a.dataset.views);
+            
+            const grid = document.getElementById('videoGrid');
+            cards.forEach(card => grid.appendChild(card));
+        });
+    }
+});
+</script>
 </body>
 </html>

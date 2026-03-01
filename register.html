@@ -1,1 +1,31 @@
-
+<!-- Такой же header -->
+<div class="auth-form">
+    <h2>Регистрация</h2>
+    <form id="regForm">
+        <input type="text" id="regUsername" placeholder="Имя пользователя" required>
+        <input type="email" id="regEmail" placeholder="Email" required>
+        <input type="password" id="regPass" placeholder="Пароль" required>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+</div>
+<script src="script.js"></script>
+<script>
+document.getElementById('regForm').onsubmit = function(e) {
+    e.preventDefault();
+    const username = document.getElementById('regUsername').value;
+    const email = document.getElementById('regEmail').value;
+    const pass = document.getElementById('regPass').value;
+    
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    if (users.find(u => u.email === email)) {
+        alert('❌ Такой email уже зарегистрирован');
+        return;
+    }
+    const newUser = {id: Date.now(), username, email, password: pass, role: 'user'};
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    alert('🎉 Регистрация успешна!');
+    location.href = 'index.html';
+};
+</script>

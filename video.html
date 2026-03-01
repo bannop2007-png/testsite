@@ -15,36 +15,27 @@
                 Vistora
             </a>
         </div>
-        <div class="search-container">
-            <form class="search-form" onsubmit="searchVideos(event)">
-                <input type="text" placeholder="Поиск" id="searchInput">
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
         <div class="header-right">
-            <button class="create-btn" onclick="location.href='upload.html'">
-                <i class="fas fa-video"></i>
-            </button>
             <div class="user-avatar" onclick="location.href='profile.html'">
                 <img src="https://via.placeholder.com/32" alt="User">
             </div>
         </div>
     </header>
 
-    <div class="video-page">
-        <div class="video-player-container" id="videoPlayer"></div>
+    <div class="video-page" style="max-width: 1200px; margin: 80px auto 20px; padding: 0 20px;">
+        <div class="video-player-container" id="videoPlayer" style="position: relative; width: 100%; padding-top: 56.25%; background: black; border-radius: 12px; overflow: hidden;"></div>
         
-        <div class="video-info">
+        <div style="margin-top: 20px;">
             <h1 id="videoTitle">Загрузка...</h1>
             
-            <div class="video-actions">
-                <div class="video-stats">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0; padding: 20px 0; border-bottom: 1px solid var(--border-color);">
+                <div>
                     <span id="videoViews">0 просмотров</span>
                     <span>•</span>
                     <span id="videoDate">сегодня</span>
                 </div>
                 
-                <div class="action-buttons">
+                <div style="display: flex; gap: 10px;">
                     <button class="action-btn" onclick="likeVideo()">
                         <i class="fas fa-thumbs-up"></i>
                         <span id="likesCount">0</span>
@@ -53,43 +44,32 @@
                         <i class="fas fa-thumbs-down"></i>
                         <span id="dislikesCount">0</span>
                     </button>
-                    <button class="action-btn" onclick="shareVideo()">
-                        <i class="fas fa-share"></i> Поделиться
-                    </button>
-                    <button class="action-btn" onclick="saveVideo()">
-                        <i class="fas fa-bookmark"></i> Сохранить
-                    </button>
                 </div>
             </div>
             
-            <div class="channel-info">
-                <img src="" alt="" id="channelAvatar" class="channel-avatar">
+            <div style="display: flex; gap: 15px; align-items: center; margin: 20px 0;">
+                <img src="" alt="" id="channelAvatar" style="width: 50px; height: 50px; border-radius: 50%;">
                 <div>
                     <h3 id="channelName">Канал</h3>
-                    <button class="subscribe-btn" onclick="subscribe()">
-                        <i class="fas fa-bell"></i> Подписаться
+                    <button class="action-btn" onclick="subscribe()" style="background: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 20px;">
+                        Подписаться
                     </button>
                 </div>
             </div>
             
-            <div class="video-description" id="videoDescription"></div>
+            <div class="video-description" id="videoDescription" style="background: var(--bg-secondary); padding: 15px; border-radius: 10px; margin: 20px 0;"></div>
         </div>
         
-        <div class="comments-section">
-            <h3>Комментарии <span id="commentsCount">0</span></h3>
+        <div style="margin-top: 40px;">
+            <h3>Комментарии</h3>
             
-            <div class="comment-form">
-                <img src="https://via.placeholder.com/40" class="comment-avatar">
-                <input type="text" placeholder="Написать комментарий..." id="commentInput">
-                <button onclick="addComment()">Отправить</button>
+            <div style="display: flex; gap: 15px; margin: 20px 0;">
+                <img src="https://via.placeholder.com/40" style="width: 40px; height: 40px; border-radius: 50%;">
+                <input type="text" placeholder="Написать комментарий..." id="commentInput" style="flex: 1; padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-primary);">
+                <button onclick="addComment()" style="padding: 10px 20px; background: var(--primary-color); border: none; border-radius: 20px; color: white; cursor: pointer;">Отправить</button>
             </div>
             
-            <div class="comments-list" id="commentsList"></div>
-        </div>
-        
-        <div class="recommendations">
-            <h3>Рекомендации</h3>
-            <div class="videos-grid" id="recommendations"></div>
+            <div id="commentsList"></div>
         </div>
     </div>
 
@@ -117,43 +97,28 @@
             document.getElementById('channelName').textContent = currentVideo.channel;
             document.getElementById('channelAvatar').src = currentVideo.channelAvatar;
             
-            const videoComments = comments.filter(c => c.videoId === videoId);
-            document.getElementById('commentsCount').textContent = videoComments.length;
-            
-            // Плеер
             if (currentVideo.videoUrl.includes('youtube')) {
                 document.getElementById('videoPlayer').innerHTML = `
-                    <iframe src="${currentVideo.videoUrl}" frameborder="0" allowfullscreen></iframe>
+                    <iframe src="${currentVideo.videoUrl}" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
                 `;
             } else {
                 document.getElementById('videoPlayer').innerHTML = `
-                    <video src="${currentVideo.videoUrl}" controls></video>
+                    <video src="${currentVideo.videoUrl}" controls style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></video>
                 `;
             }
             
-            // Лайки
-            const likes = JSON.parse(localStorage.getItem('likes') || '{}');
-            document.getElementById('likesCount').textContent = likes[`${videoId}_likes`] || 0;
-            document.getElementById('dislikesCount').textContent = likes[`${videoId}_dislikes`] || 0;
-            
-            // Комментарии
+            const videoComments = comments.filter(c => c.videoId === videoId);
             displayComments(videoComments);
-            
-            // Рекомендации
-            loadRecommendations(currentVideo.category, videoId);
-            
-            // Добавляем в историю
-            addToHistory(videoId);
         }
         
         function displayComments(comments) {
             document.getElementById('commentsList').innerHTML = comments.map(c => `
-                <div class="comment">
-                    <img src="${c.avatar}" class="comment-avatar">
-                    <div class="comment-content">
+                <div style="display: flex; gap: 15px; margin: 15px 0;">
+                    <img src="${c.avatar}" style="width: 40px; height: 40px; border-radius: 50%;">
+                    <div>
                         <strong>${c.author}</strong>
                         <p>${c.text}</p>
-                        <small>${formatDate(c.date)}</small>
+                        <small style="color: var(--text-secondary);">${formatDate(c.date)}</small>
                     </div>
                 </div>
             `).join('');
@@ -174,8 +139,7 @@
                 author: user.name || 'Гость',
                 avatar: user.avatar || 'https://via.placeholder.com/40',
                 text: text,
-                date: new Date().toISOString(),
-                likes: 0
+                date: new Date().toISOString()
             });
             
             localStorage.setItem('comments', JSON.stringify(comments));
@@ -191,65 +155,14 @@
             document.getElementById('likesCount').textContent = likes[key];
         }
         
-        function dislikeVideo() {
-            const likes = JSON.parse(localStorage.getItem('likes') || '{}');
-            const key = `${currentVideo.id}_dislikes`;
-            likes[key] = (likes[key] || 0) + 1;
-            localStorage.setItem('likes', JSON.stringify(likes));
-            document.getElementById('dislikesCount').textContent = likes[key];
-        }
-        
-        function shareVideo() {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Ссылка скопирована!');
-        }
-        
-        function saveVideo() {
-            let saved = JSON.parse(localStorage.getItem('savedVideos') || '[]');
-            if (!saved.includes(currentVideo.id)) {
-                saved.push(currentVideo.id);
-                localStorage.setItem('savedVideos', JSON.stringify(saved));
-                alert('Видео сохранено!');
-            }
-        }
-        
-        function addToHistory(videoId) {
-            let history = JSON.parse(localStorage.getItem('history') || '[]');
-            history = history.filter(id => id !== videoId);
-            history.unshift(videoId);
-            history = history.slice(0, 50);
-            localStorage.setItem('history', JSON.stringify(history));
-        }
-        
-        function loadRecommendations(category, currentId) {
-            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
-            const recommended = videos
-                .filter(v => v.category === category && v.id !== currentId)
-                .slice(0, 4);
-            
-            document.getElementById('recommendations').innerHTML = recommended.map(v => `
-                <a href="video.html?id=${v.id}" class="video-card">
-                    <div class="video-thumbnail">
-                        <img src="${v.thumbnail}">
-                        <span class="video-duration">${v.duration}</span>
-                    </div>
-                    <div class="video-info">
-                        <h4>${v.title}</h4>
-                        <p>${v.channel}</p>
-                        <span>${v.views} просмотров</span>
-                    </div>
-                </a>
-            `).join('');
-        }
-        
         function formatDate(dateString) {
             const date = new Date(dateString);
             const now = new Date();
-            const diff = Math.floor((now - date) / 1000);
+            const diff = Math.floor((now - date) / 86400000);
             
-            if (diff < 3600) return `${Math.floor(diff / 60)} минут назад`;
-            if (diff < 86400) return `${Math.floor(diff / 3600)} часов назад`;
-            return `${Math.floor(diff / 86400)} дней назад`;
+            if (diff === 0) return 'сегодня';
+            if (diff === 1) return 'вчера';
+            return `${diff} дней назад`;
         }
         
         loadVideo();

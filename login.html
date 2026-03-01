@@ -1,33 +1,149 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head><meta charset="UTF-8"><title>Вход — Vistora</title><link rel="stylesheet" href="style.css"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — Vistora</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-primary), #000);
+        }
+        
+        .auth-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+        
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .auth-box h2 i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+        
+        .auth-form {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .auth-form input {
+            padding: 15px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        
+        .auth-form button {
+            padding: 15px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .auth-form button:hover {
+            background: #cc0000;
+        }
+        
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .auth-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .error-message {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
 <body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>
+                <i class="fas fa-play-circle"></i>
+                Vistora
+            </h2>
+            
+            <form class="auth-form" onsubmit="login(event)">
+                <input type="email" placeholder="Email" id="email" required>
+                <input type="password" placeholder="Пароль" id="password" required>
+                <div class="error-message" id="error"></div>
+                <button type="submit">Войти</button>
+            </form>
+            
+            <div class="auth-links">
+                <a href="register.html">Нет аккаунта? Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
 
-<div class="auth-form">
-    <h2>Вход</h2>
-    <form id="loginForm">
-        <input type="email" id="loginEmail" placeholder="Email" required>
-        <input type="password" id="loginPass" placeholder="Пароль" required>
-        <button type="submit">Войти</button>
-    </form>
-    <p>Нет аккаунта? <a href="register.html">Зарегистрироваться</a></p>
-</div>
-<script src="script.js"></script>
-<script>
-document.getElementById('loginForm').onsubmit = function(e) {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const pass = document.getElementById('loginPass').value;
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(u => u.email === email && u.password === pass);
-    if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        alert('✅ Добро пожаловать, ' + user.username + '!');
-        location.href = 'index.html';
-    } else {
-        alert('❌ Неверный логин или пароль');
-    }
-};
-</script>
+    <script>
+        function login(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                window.location.href = 'index.html';
+            } else {
+                document.getElementById('error').textContent = 'Неверный email или пароль';
+            }
+        }
+        
+        // Создаём тестового админа если нет пользователей
+        if (JSON.parse(localStorage.getItem('users') || '[]').length === 0) {
+            const users = [
+                {
+                    id: 1,
+                    name: 'Админ',
+                    email: 'admin@vistora.ru',
+                    password: 'admin123',
+                    role: 'admin',
+                    avatar: 'https://via.placeholder.com/100/ff0000/ffffff?text=Admin'
+                },
+                {
+                    id: 2,
+                    name: 'Иван Петров',
+                    email: 'ivan@mail.ru',
+                    password: '123456',
+                    role: 'user',
+                    avatar: 'https://via.placeholder.com/100'
+                }
+            ];
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+    </script>
 </body>
 </html>

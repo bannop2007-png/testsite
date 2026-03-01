@@ -2,42 +2,257 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Просмотр — Vistora</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Видео — Vistora</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .player { width:100%; max-width:900px; margin:40px auto; background:#000; border-radius:16px; overflow:hidden; }
-        video { width:100%; display:block; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <i class="fas fa-play-circle"></i>
+                Vistora
+            </a>
+        </div>
+        <div class="search-container">
+            <form class="search-form" onsubmit="searchVideos(event)">
+                <input type="text" placeholder="Поиск" id="searchInput">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+        <div class="header-right">
+            <button class="create-btn" onclick="location.href='upload.html'">
+                <i class="fas fa-video"></i>
+            </button>
+            <div class="user-avatar" onclick="location.href='profile.html'">
+                <img src="https://via.placeholder.com/32" alt="User">
+            </div>
+        </div>
+    </header>
 
-<main class="main-content" style="margin-left:240px; padding:80px 40px;">
-    <div class="player">
-        <video id="videoPlayer" controls autoplay>
-            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-        </video>
+    <div class="video-page">
+        <div class="video-player-container" id="videoPlayer"></div>
+        
+        <div class="video-info">
+            <h1 id="videoTitle">Загрузка...</h1>
+            
+            <div class="video-actions">
+                <div class="video-stats">
+                    <span id="videoViews">0 просмотров</span>
+                    <span>•</span>
+                    <span id="videoDate">сегодня</span>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="likeVideo()">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span id="likesCount">0</span>
+                    </button>
+                    <button class="action-btn" onclick="dislikeVideo()">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span id="dislikesCount">0</span>
+                    </button>
+                    <button class="action-btn" onclick="shareVideo()">
+                        <i class="fas fa-share"></i> Поделиться
+                    </button>
+                    <button class="action-btn" onclick="saveVideo()">
+                        <i class="fas fa-bookmark"></i> Сохранить
+                    </button>
+                </div>
+            </div>
+            
+            <div class="channel-info">
+                <img src="" alt="" id="channelAvatar" class="channel-avatar">
+                <div>
+                    <h3 id="channelName">Канал</h3>
+                    <button class="subscribe-btn" onclick="subscribe()">
+                        <i class="fas fa-bell"></i> Подписаться
+                    </button>
+                </div>
+            </div>
+            
+            <div class="video-description" id="videoDescription"></div>
+        </div>
+        
+        <div class="comments-section">
+            <h3>Комментарии <span id="commentsCount">0</span></h3>
+            
+            <div class="comment-form">
+                <img src="https://via.placeholder.com/40" class="comment-avatar">
+                <input type="text" placeholder="Написать комментарий..." id="commentInput">
+                <button onclick="addComment()">Отправить</button>
+            </div>
+            
+            <div class="comments-list" id="commentsList"></div>
+        </div>
+        
+        <div class="recommendations">
+            <h3>Рекомендации</h3>
+            <div class="videos-grid" id="recommendations"></div>
+        </div>
     </div>
-    <div style="max-width:900px; margin:20px auto; color:white;">
-        <h2 id="videoTitle">Загрузка названия...</h2>
-        <p id="videoDesc">Описание видео...</p>
-    </div>
-</main>
 
-<script src="script.js"></script>
-<script>
-const params = new URLSearchParams(location.search);
-const id = params.get('id') || '1';
-
-const videos = {
-    '1': {title: 'Как я начал программировать в 2026', desc: 'Полная история Islam Dev'},
-    '2': {title: 'Создание сайта с нуля за 1 час', desc: 'Frontend Life'},
-    '3': {title: 'CSS за 30 минут — Мастер-класс', desc: 'Code Start'}
-};
-
-document.getElementById('videoTitle').textContent = videos[id].title;
-document.getElementById('videoDesc').textContent = videos[id].desc;
-
-updateHeader();
-</script>
+    <script>
+        let currentVideo = null;
+        
+        function loadVideo() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoId = parseInt(urlParams.get('id'));
+            
+            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
+            const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+            
+            currentVideo = videos.find(v => v.id === videoId);
+            
+            if (!currentVideo) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            document.getElementById('videoTitle').textContent = currentVideo.title;
+            document.getElementById('videoViews').textContent = currentVideo.views + ' просмотров';
+            document.getElementById('videoDate').textContent = formatDate(currentVideo.date);
+            document.getElementById('videoDescription').textContent = currentVideo.description;
+            document.getElementById('channelName').textContent = currentVideo.channel;
+            document.getElementById('channelAvatar').src = currentVideo.channelAvatar;
+            
+            const videoComments = comments.filter(c => c.videoId === videoId);
+            document.getElementById('commentsCount').textContent = videoComments.length;
+            
+            // Плеер
+            if (currentVideo.videoUrl.includes('youtube')) {
+                document.getElementById('videoPlayer').innerHTML = `
+                    <iframe src="${currentVideo.videoUrl}" frameborder="0" allowfullscreen></iframe>
+                `;
+            } else {
+                document.getElementById('videoPlayer').innerHTML = `
+                    <video src="${currentVideo.videoUrl}" controls></video>
+                `;
+            }
+            
+            // Лайки
+            const likes = JSON.parse(localStorage.getItem('likes') || '{}');
+            document.getElementById('likesCount').textContent = likes[`${videoId}_likes`] || 0;
+            document.getElementById('dislikesCount').textContent = likes[`${videoId}_dislikes`] || 0;
+            
+            // Комментарии
+            displayComments(videoComments);
+            
+            // Рекомендации
+            loadRecommendations(currentVideo.category, videoId);
+            
+            // Добавляем в историю
+            addToHistory(videoId);
+        }
+        
+        function displayComments(comments) {
+            document.getElementById('commentsList').innerHTML = comments.map(c => `
+                <div class="comment">
+                    <img src="${c.avatar}" class="comment-avatar">
+                    <div class="comment-content">
+                        <strong>${c.author}</strong>
+                        <p>${c.text}</p>
+                        <small>${formatDate(c.date)}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function addComment() {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            
+            comments.push({
+                id: Date.now(),
+                videoId: currentVideo.id,
+                author: user.name || 'Гость',
+                avatar: user.avatar || 'https://via.placeholder.com/40',
+                text: text,
+                date: new Date().toISOString(),
+                likes: 0
+            });
+            
+            localStorage.setItem('comments', JSON.stringify(comments));
+            input.value = '';
+            loadVideo();
+        }
+        
+        function likeVideo() {
+            const likes = JSON.parse(localStorage.getItem('likes') || '{}');
+            const key = `${currentVideo.id}_likes`;
+            likes[key] = (likes[key] || 0) + 1;
+            localStorage.setItem('likes', JSON.stringify(likes));
+            document.getElementById('likesCount').textContent = likes[key];
+        }
+        
+        function dislikeVideo() {
+            const likes = JSON.parse(localStorage.getItem('likes') || '{}');
+            const key = `${currentVideo.id}_dislikes`;
+            likes[key] = (likes[key] || 0) + 1;
+            localStorage.setItem('likes', JSON.stringify(likes));
+            document.getElementById('dislikesCount').textContent = likes[key];
+        }
+        
+        function shareVideo() {
+            navigator.clipboard.writeText(window.location.href);
+            alert('Ссылка скопирована!');
+        }
+        
+        function saveVideo() {
+            let saved = JSON.parse(localStorage.getItem('savedVideos') || '[]');
+            if (!saved.includes(currentVideo.id)) {
+                saved.push(currentVideo.id);
+                localStorage.setItem('savedVideos', JSON.stringify(saved));
+                alert('Видео сохранено!');
+            }
+        }
+        
+        function addToHistory(videoId) {
+            let history = JSON.parse(localStorage.getItem('history') || '[]');
+            history = history.filter(id => id !== videoId);
+            history.unshift(videoId);
+            history = history.slice(0, 50);
+            localStorage.setItem('history', JSON.stringify(history));
+        }
+        
+        function loadRecommendations(category, currentId) {
+            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
+            const recommended = videos
+                .filter(v => v.category === category && v.id !== currentId)
+                .slice(0, 4);
+            
+            document.getElementById('recommendations').innerHTML = recommended.map(v => `
+                <a href="video.html?id=${v.id}" class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="${v.thumbnail}">
+                        <span class="video-duration">${v.duration}</span>
+                    </div>
+                    <div class="video-info">
+                        <h4>${v.title}</h4>
+                        <p>${v.channel}</p>
+                        <span>${v.views} просмотров</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+            
+            if (diff < 3600) return `${Math.floor(diff / 60)} минут назад`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} часов назад`;
+            return `${Math.floor(diff / 86400)} дней назад`;
+        }
+        
+        loadVideo();
+    </script>
 </body>
 </html>

@@ -16,12 +16,15 @@
             </a>
         </div>
         <div class="search-container">
-            <form class="search-form">
-                <input type="text" placeholder="Поиск">
+            <form class="search-form" onsubmit="return false;">
+                <input type="text" placeholder="Поиск" id="searchInput">
                 <button type="submit"><i class="fas fa-search"></i></button>
             </form>
         </div>
         <div class="header-right">
+            <button class="create-btn" onclick="location.href='upload.html'">
+                <i class="fas fa-video"></i>
+            </button>
             <div class="user-avatar" onclick="location.href='profile.html'">
                 <img src="https://via.placeholder.com/32" alt="User">
             </div>
@@ -47,6 +50,11 @@
                 .slice(0, 20);
             
             const grid = document.getElementById('trendingGrid');
+            
+            if (trending.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Нет видео</p>';
+                return;
+            }
             
             grid.innerHTML = trending.map(v => `
                 <a href="video.html?id=${v.id}" class="video-card">

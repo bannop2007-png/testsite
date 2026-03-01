@@ -3,89 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ-панель — Vistora</title>
+    <title>Админ панель — Vistora</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Специальные стили для админки */
-        .admin-container {
-            max-width: 1400px;
+        .admin-panel {
+            max-width: 1200px;
             margin: 80px auto 20px;
             padding: 20px;
         }
-        
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
         }
-        
-        .admin-stats {
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-        
         .stat-card {
             background: var(--bg-secondary);
             padding: 20px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
         }
-        
         .stat-number {
             font-size: 32px;
             font-weight: bold;
             color: var(--primary-color);
         }
-        
         .admin-tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
         }
-        
         .admin-tab {
             padding: 10px 20px;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
             cursor: pointer;
-            font-size: 16px;
+            color: var(--text-secondary);
         }
-        
         .admin-tab.active {
             color: var(--primary-color);
             border-bottom: 2px solid var(--primary-color);
         }
-        
-        .admin-panel {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-        }
-        
         .video-form {
             display: grid;
             gap: 15px;
             margin-bottom: 30px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
         }
-        
         .form-group {
             display: grid;
             gap: 5px;
         }
-        
-        .form-group label {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-        
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -95,24 +71,16 @@
             border-radius: 5px;
             color: var(--text-primary);
         }
-        
         .admin-table {
             width: 100%;
             border-collapse: collapse;
         }
-        
         .admin-table th,
         .admin-table td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
-        
-        .admin-table th {
-            color: var(--text-secondary);
-            font-weight: normal;
-        }
-        
         .action-btn {
             padding: 5px 10px;
             margin: 0 5px;
@@ -120,17 +88,8 @@
             border-radius: 3px;
             cursor: pointer;
         }
-        
-        .edit-btn {
-            background: var(--secondary-color);
-            color: white;
-        }
-        
-        .delete-btn {
-            background: var(--primary-color);
-            color: white;
-        }
-        
+        .edit-btn { background: var(--secondary-color); color: white; }
+        .delete-btn { background: var(--primary-color); color: white; }
         .save-btn {
             background: var(--primary-color);
             color: white;
@@ -138,170 +97,189 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-        }
-        
-        .login-required {
-            text-align: center;
-            padding: 50px;
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .login-required a {
-            color: var(--primary-color);
-            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <!-- Шапка такая же как на главной -->
     <header class="header">
-        <!-- ... копируем шапку из index.html ... -->
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <i class="fas fa-play-circle"></i>
+                Vistora Admin
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="user-avatar" onclick="location.href='profile.html'">
+                <img src="https://via.placeholder.com/32" alt="User">
+            </div>
+        </div>
     </header>
 
-    <div class="admin-container" id="adminContainer">
-        <!-- Контент будет загружаться через JS -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h1>Панель управления</h1>
+            <button class="action-btn edit-btn" onclick="exportData()">
+                <i class="fas fa-download"></i> Экспорт
+            </button>
+        </div>
+
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="showTab('videos')">Видео</button>
+            <button class="admin-tab" onclick="showTab('users')">Пользователи</button>
+            <button class="admin-tab" onclick="showTab('comments')">Комментарии</button>
+            <button class="admin-tab" onclick="showTab('settings')">Настройки</button>
+        </div>
+
+        <div id="tabContent"></div>
     </div>
 
     <script>
-        // Проверка админа
-        const adminUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
         
-        if (adminUser.role !== 'admin') {
-            document.getElementById('adminContainer').innerHTML = `
-                <div class="login-required">
-                    <i class="fas fa-lock" style="font-size: 48px; color: var(--primary-color); margin-bottom: 20px;"></i>
-                    <h2>Доступ запрещён</h2>
-                    <p>Только администраторы могут войти в эту панель</p>
-                    <a href="login.html">Войти как администратор</a>
-                </div>
-            `;
-        } else {
-            loadAdminPanel();
+        if (currentUser.role !== 'admin') {
+            alert('Доступ запрещён!');
+            window.location.href = 'index.html';
         }
-        
-        function loadAdminPanel() {
+
+        function loadStats() {
             const videos = JSON.parse(localStorage.getItem('videos') || '[]');
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             const comments = JSON.parse(localStorage.getItem('comments') || '[]');
             
-            document.getElementById('adminContainer').innerHTML = `
-                <div class="admin-header">
-                    <h1>Админ-панель Vistora</h1>
-                    <button class="action-btn" onclick="exportData()">
-                        <i class="fas fa-download"></i> Экспорт данных
-                    </button>
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${videos.length}</div>
+                    <div>Видео</div>
                 </div>
-                
-                <div class="admin-stats">
-                    <div class="stat-card">
-                        <div class="stat-number">${videos.length}</div>
-                        <div>Всего видео</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${users.length}</div>
-                        <div>Пользователей</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${comments.length}</div>
-                        <div>Комментариев</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${getTotalViews(videos)}</div>
-                        <div>Всего просмотров</div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number">${users.length}</div>
+                    <div>Пользователи</div>
                 </div>
-                
-                <div class="admin-tabs">
-                    <button class="admin-tab active" onclick="showTab('videos')">Видео</button>
-                    <button class="admin-tab" onclick="showTab('users')">Пользователи</button>
-                    <button class="admin-tab" onclick="showTab('comments')">Комментарии</button>
-                    <button class="admin-tab" onclick="showTab('settings')">Настройки</button>
+                <div class="stat-card">
+                    <div class="stat-number">${comments.length}</div>
+                    <div>Комментарии</div>
                 </div>
-                
-                <div class="admin-panel" id="adminPanel">
-                    ${renderVideosTab(videos)}
+                <div class="stat-card">
+                    <div class="stat-number">${getTotalViews(videos)}</div>
+                    <div>Просмотры</div>
                 </div>
             `;
         }
-        
-        function renderVideosTab(videos) {
-            return `
-                <h2>Управление видео</h2>
-                
-                <form class="video-form" onsubmit="addVideo(event)">
-                    <h3>Добавить новое видео</h3>
-                    <div class="form-group">
-                        <label>Название</label>
-                        <input type="text" id="videoTitle" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Описание</label>
-                        <textarea id="videoDesc" rows="3" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Категория</label>
-                        <select id="videoCategory">
-                            <option value="tech">Технологии</option>
-                            <option value="music">Музыка</option>
-                            <option value="games">Игры</option>
-                            <option value="news">Новости</option>
-                            <option value="sport">Спорт</option>
-                            <option value="movies">Фильмы</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>URL видео (или YouTube ID)</label>
-                        <input type="text" id="videoUrl" required>
-                    </div>
-                    <div class="form-group">
-                        <label>URL миниатюры</label>
-                        <input type="text" id="videoThumb" required>
-                    </div>
-                    <button type="submit" class="save-btn">
-                        <i class="fas fa-plus"></i> Добавить видео
-                    </button>
-                </form>
-                
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Миниатюра</th>
-                            <th>Название</th>
-                            <th>Канал</th>
-                            <th>Просмотры</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${videos.map(video => `
-                            <tr>
-                                <td>${video.id}</td>
-                                <td><img src="${video.thumbnail}" width="50"></td>
-                                <td>${video.title}</td>
-                                <td>${video.channel}</td>
-                                <td>${video.views}</td>
-                                <td>
-                                    <button class="action-btn edit-btn" onclick="editVideo(${video.id})">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" onclick="deleteVideo(${video.id})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-        
-        function addVideo(event) {
-            event.preventDefault();
+
+        function showTab(tab) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
             
+            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+            
+            let content = '';
+            
+            if (tab === 'videos') {
+                content = `
+                    <h2>Управление видео</h2>
+                    <form class="video-form" onsubmit="addVideo(event)">
+                        <h3>Добавить видео</h3>
+                        <div class="form-group">
+                            <label>Название</label>
+                            <input type="text" id="videoTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Описание</label>
+                            <textarea id="videoDesc" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Категория</label>
+                            <select id="videoCategory">
+                                <option value="tech">Технологии</option>
+                                <option value="music">Музыка</option>
+                                <option value="games">Игры</option>
+                                <option value="news">Новости</option>
+                                <option value="sport">Спорт</option>
+                                <option value="movies">Фильмы</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>URL видео</label>
+                            <input type="text" id="videoUrl" placeholder="https://www.youtube.com/embed/... или /videos/...">
+                        </div>
+                        <div class="form-group">
+                            <label>URL миниатюры</label>
+                            <input type="text" id="videoThumb" required>
+                        </div>
+                        <button type="submit" class="save-btn">Добавить видео</button>
+                    </form>
+                    
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Канал</th>
+                                <th>Просмотры</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${videos.map(v => `
+                                <tr>
+                                    <td>${v.id}</td>
+                                    <td>${v.title}</td>
+                                    <td>${v.channel}</td>
+                                    <td>${v.views}</td>
+                                    <td>
+                                        <button class="action-btn edit-btn" onclick="editVideo(${v.id})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete-btn" onclick="deleteVideo(${v.id})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (tab === 'users') {
+                content = `
+                    <h2>Пользователи</h2>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Роль</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${users.map(u => `
+                                <tr>
+                                    <td>${u.id}</td>
+                                    <td>${u.name}</td>
+                                    <td>${u.email}</td>
+                                    <td>${u.role || 'user'}</td>
+                                    <td>
+                                        <button class="action-btn delete-btn" onclick="banUser(${u.id})">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+            
+            document.getElementById('tabContent').innerHTML = content;
+        }
+
+        function addVideo(e) {
+            e.preventDefault();
             const videos = JSON.parse(localStorage.getItem('videos') || '[]');
             
             const newVideo = {
@@ -323,21 +301,24 @@
             
             videos.push(newVideo);
             localStorage.setItem('videos', JSON.stringify(videos));
-            loadAdminPanel();
+            showTab('videos');
         }
-        
+
         function deleteVideo(id) {
             if (confirm('Удалить видео?')) {
                 let videos = JSON.parse(localStorage.getItem('videos') || '[]');
                 videos = videos.filter(v => v.id !== id);
                 localStorage.setItem('videos', JSON.stringify(videos));
-                loadAdminPanel();
+                showTab('videos');
             }
         }
-        
+
         function getTotalViews(videos) {
             return videos.reduce((sum, v) => sum + (parseInt(v.views) || 0), 0);
         }
+
+        loadStats();
+        showTab('videos');
     </script>
 </body>
 </html>

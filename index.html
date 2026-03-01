@@ -6,37 +6,54 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <header class="header">
     <div class="logo">Vistora</div>
+    
+    <!-- Поисковая строка (как в YouTube) -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Поиск видео...">
+        <button class="search-btn">🔎</button>
+    </div>
 
-    <div class="nav">
+    <div class="nav" id="nav">
         <button id="themeToggle">🌙</button>
-        <a href="login.html" class="btn">Войти</a>
-        <a href="register.html" class="btn primary">Регистрация</a>
+        <!-- Здесь будет динамически подставляться: Войти / Профиль / Админ / Выйти -->
     </div>
 </header>
 
-<main class="container">
+<!-- Сайдбар (как в настоящем YouTube) -->
+<aside class="sidebar">
+    <nav>
+        <a href="index.html" class="sidebar-link active">🏠 Главная</a>
+        <a href="#" class="sidebar-link">🔍 Поиск</a>
+        <a href="#" class="sidebar-link">📺 Короткие</a>
+        <a href="#" class="sidebar-link">📚 Подписки</a>
+        <hr>
+        <a href="#" class="sidebar-link">📜 История</a>
+        <a href="#" class="sidebar-link">❤️ Избранное</a>
+        <a href="#" class="sidebar-link">📥 Скачанные</a>
+        <hr>
+        <a href="profile.html" class="sidebar-link">👤 Вы</a>
+        <a href="#" class="sidebar-link">⚙️ Настройки</a>
+    </nav>
+</aside>
 
-    <div class="video-card">
-        <div class="thumbnail"></div>
-        <h3>Как я начал программировать</h3>
-        <p>Islam Dev • 1.2k просмотров</p>
+<main class="main-content">
+    <!-- Категории (чипы) -->
+    <div class="categories">
+        <span class="category-chip active">Все</span>
+        <span class="category-chip">Программирование</span>
+        <span class="category-chip">Музыка</span>
+        <span class="category-chip">Игры</span>
+        <span class="category-chip">Новости</span>
+        <span class="category-chip">Спорт</span>
+        <span class="category-chip">Фильмы</span>
     </div>
 
-    <div class="video-card">
-        <div class="thumbnail"></div>
-        <h3>Создание сайта с нуля</h3>
-        <p>Frontend Life • 980 просмотров</p>
+    <!-- Сетка видео -->
+    <div class="video-grid" id="videoGrid">
+        <!-- Заполняется через JS или статично -->
     </div>
-
-    <div class="video-card">
-        <div class="thumbnail"></div>
-        <h3>CSS за 30 минут</h3>
-        <p>Code Start • 2.1k просмотров</p>
-    </div>
-
 </main>
 
 <script src="script.js"></script>

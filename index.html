@@ -2,28 +2,49 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Vistora — Элитный видеохостинг</title>
+    <title>Vistora</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
+
 <header class="header">
-    <a href="index.html" class="logo">Vistora</a>
-    <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Поиск по видео...">
-        <button class="search-btn">🔎</button>
+    <div class="logo">Vistora</div>
+
+    <div class="nav">
+        <button id="themeToggle">🌙</button>
+        <a href="login.html" class="btn">Войти</a>
+        <a href="register.html" class="btn primary">Регистрация</a>
     </div>
-    <div class="nav" id="nav"></div>
 </header>
 
-<aside class="sidebar"> ... (тот же как раньше) </aside>
+<main class="container">
 
-<main class="main-content">
-    <div class="categories"> ... (те же чипы) </div>
-    <div class="sort-bar">Сортировать: <select id="sortSelect"><option value="new">Новизна</option></select></div>
-    <div class="video-grid" id="videoGrid"></div>
+    <div class="video-card">
+        <div class="thumbnail"></div>
+        <h3>Как я начал программировать</h3>
+        <p>Islam Dev • 1.2k просмотров</p>
+    </div>
+
+    <div class="video-card">
+        <div class="thumbnail"></div>
+        <h3>Создание сайта с нуля</h3>
+        <p>Frontend Life • 980 просмотров</p>
+    </div>
+
+    <div class="video-card">
+        <div class="thumbnail"></div>
+        <h3>CSS за 30 минут</h3>
+        <p>Code Start • 2.1k просмотров</p>
+    </div>
+
 </main>
 
-<script src="script.js"></script>
+<script>
+const toggle = document.getElementById("themeToggle");
+toggle.addEventListener("click", () => {
+    document.body.classList.toggle("light");
+});
+</script>
+
 </body>
 </html>

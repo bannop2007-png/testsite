@@ -7,7 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-<!-- === HEADER === -->
+
+<!-- HEADER (полный, как в index.html) -->
 <header class="header">
     <div class="logo">Vistora</div>
     <div class="search-bar">
@@ -17,7 +18,7 @@
     <div class="nav" id="nav"></div>
 </header>
 
-<!-- === SIDEBAR === -->
+<!-- SIDEBAR (полный, как в index.html) -->
 <aside class="sidebar">
     <nav>
         <a href="index.html" class="sidebar-link">🏠 Главная</a>
@@ -34,25 +35,33 @@
     </nav>
 </aside>
 
-<!-- === ОСНОВНОЙ КОНТЕНТ === -->
+<!-- ОСНОВНОЙ КОНТЕНТ -->
 <main class="main-content" style="margin-left:260px; padding:100px 40px;">
     <div style="max-width:900px; margin:auto; background:#111; border-radius:24px; padding:50px; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
         <h1 style="font-family:'Playfair Display',serif; font-size:42px; margin-bottom:30px; color:#ffd700;">⚙️ Настройки аккаунта</h1>
         
-        <!-- АДМИН-ПАНЕЛЬ (показывается только у Islam и admin) -->
+        <!-- АДМИН-ПАНЕЛЬ -->
         <div id="adminSection" style="display:none; background:#1a1a1a; padding:30px; border-radius:16px; margin-bottom:40px;">
             <h2 style="color:#ffd700; margin-top:0;">🔧 Админ-панель</h2>
             <p style="color:#ccc; font-size:16px;">Здесь будут все пользователи, модерация видео и статистика.</p>
-            <button onclick="alert('✅ Админ-функции работают! Скоро добавим загрузку видео и список пользователей')" 
+            <button onclick="alert('✅ Админ-функции работают! Скоро добавим загрузку видео')" 
                     style="padding:14px 36px; background:#ff0055; color:white; border:none; border-radius:30px; font-size:16px; cursor:pointer;">
                 Управление пользователями
             </button>
         </div>
 
-        <!-- ИНФО О ПОЛЬЗОВАТЕЛЕ -->
+        <!-- МОИ ДАННЫЕ -->
         <div style="background:#1a1a1a; padding:30px; border-radius:16px;">
             <h3 style="color:#fff; margin-top:0;">👤 Мои данные</h3>
             <div id="userInfo" style="font-size:16px; line-height:1.8; color:#ccc;"></div>
+        </div>
+
+        <!-- КНОПКА ВЫХОДА -->
+        <div style="margin-top:40px; text-align:center;">
+            <button onclick="logout()" 
+                    style="padding:14px 40px; background:#ff0055; color:white; border:none; border-radius:30px; font-size:17px; cursor:pointer;">
+                🚪 Выйти из аккаунта
+            </button>
         </div>
     </div>
 </main>
@@ -60,7 +69,7 @@
 <script src="script.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    updateHeader();                    // обновляет шапку (логин/админ)
+    updateHeader();                    // обновляет шапку
     
     const user = getCurrentUser();
     if (!user) {
@@ -68,14 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    // Заполняем данные пользователя
     document.getElementById('userInfo').innerHTML = `
-        <p><strong>Имя пользователя:</strong> ${user.username}</p>
+        <p><strong>Имя:</strong> ${user.username}</p>
         <p><strong>Email:</strong> ${user.email}</p>
         <p><strong>Роль:</strong> ${user.role === 'admin' || user.username.toLowerCase() === 'islam' ? 'Администратор 🔥' : 'Пользователь'}</p>
     `;
     
-    // Показываем админ-панель только Islam и admin
+    // Показываем админ-панель
     if (user.username === 'admin' || user.username.toLowerCase() === 'islam') {
         document.getElementById('adminSection').style.display = 'block';
     }

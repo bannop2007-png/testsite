@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль — Vistora</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+    <div class="logo">Vistora</div>
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Поиск видео...">
+        <button class="search-btn">🔎</button>
+    </div>
+    <div class="nav" id="nav"></div>
+</header>
 
+<aside class="sidebar">
+    <!-- тот же сайдбар как в index.html -->
+    <nav>
+        <a href="index.html" class="sidebar-link">🏠 Главная</a>
+        <a href="#" class="sidebar-link">🔍 Поиск</a>
+        <a href="#" class="sidebar-link">📺 Короткие</a>
+        <a href="#" class="sidebar-link">📚 Подписки</a>
+        <hr>
+        <a href="#" class="sidebar-link">📜 История</a>
+        <a href="#" class="sidebar-link">❤️ Избранное</a>
+        <a href="#" class="sidebar-link">📥 Скачанные</a>
+        <hr>
+        <a href="profile.html" class="sidebar-link active">👤 Вы</a>
+        <a href="#" class="sidebar-link">⚙️ Настройки</a>
+    </nav>
+</aside>
+
+<main class="main-content" style="margin-left:240px; padding:80px 40px;">
+    <div style="max-width:800px; margin:0 auto; background:#181818; padding:40px; border-radius:16px;">
+        <h1>👤 Мой профиль</h1>
+        <div id="profileInfo" style="font-size:18px; line-height:1.8;"></div>
+        
+        <button onclick="logout()" style="margin-top:30px; padding:12px 30px; background:#ff0000; color:white; border:none; border-radius:20px; font-size:16px; cursor:pointer;">
+            Выйти из аккаунта
+        </button>
+    </div>
+</main>
+
+<script src="script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const user = getCurrentUser();
+    if (!user) {
+        location.href = 'login.html';
+        return;
+    }
+    document.getElementById('profileInfo').innerHTML = `
+        <p><strong>Имя:</strong> ${user.username}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Роль:</strong> ${user.role === 'admin' ? 'Администратор 🔥' : 'Пользователь'}</p>
+        <p><strong>Зарегистрирован:</strong> ${new Date(user.id).toLocaleDateString('ru-RU')}</p>
+    `;
+    updateHeader(); // обновит шапку
+});
+</script>
+</body>
+</html>

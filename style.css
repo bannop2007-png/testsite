@@ -655,3 +655,129 @@ body {
 .video-card {
     animation: fadeIn 0.5s ease forwards;
 }
+/* ===== АДАПТАЦИЯ ДЛЯ ТЕЛЕФОНОВ И ПЛАНШЕТОВ ===== */
+/* Для планшетов (экраны до 1024px) */
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-240px);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding: 80px 15px 20px;
+    }
+    
+    .videos-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+}
+
+/* Для телефонов (экраны до 768px) — САМОЕ ВАЖНОЕ */
+@media (max-width: 768px) {
+    /* Шапка */
+    .header {
+        padding: 0 10px;
+    }
+    
+    .logo span {
+        display: none; /* Прячем текст логотипа, оставляем иконку */
+    }
+    
+    .search-container {
+        flex: 1;
+        margin: 0 5px;
+    }
+    
+    .search-form input {
+        width: 100%;
+        padding: 8px 10px;
+    }
+    
+    .create-btn span {
+        display: none; /* Прячем текст "Создать", оставляем иконку */
+    }
+    
+    .create-btn {
+        padding: 8px;
+    }
+    
+    /* Боковое меню */
+    .sidebar {
+        width: 200px;
+    }
+    
+    /* Сетка видео */
+    .videos-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 видео в ряд */
+        gap: 10px;
+    }
+    
+    /* Карточка видео */
+    .video-title {
+        font-size: 14px;
+    }
+    
+    .video-channel,
+    .video-stats {
+        font-size: 12px;
+    }
+    
+    /* Фильтры (скролл по горизонтали) */
+    .filters-bar {
+        padding: 10px 0;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .filter-chip {
+        display: inline-block;
+        margin-right: 8px;
+    }
+    
+    /* Кнопка загрузить ещё */
+    .load-more-btn {
+        width: 100%;
+        margin: 20px 0;
+    }
+}
+
+/* Для маленьких телефонов (до 480px) */
+@media (max-width: 480px) {
+    .videos-grid {
+        grid-template-columns: 1fr; /* 1 видео в ряд */
+    }
+    
+    .video-card {
+        margin-bottom: 15px;
+    }
+    
+    .video-title {
+        font-size: 16px;
+    }
+    
+    .search-form button {
+        padding: 0 12px;
+    }
+    
+    .header-right {
+        gap: 8px;
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Для альбомной ориентации телефона */
+@media (max-width: 896px) and (orientation: landscape) {
+    .videos-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .sidebar {
+        transform: translateX(-240px);
+    }
+}

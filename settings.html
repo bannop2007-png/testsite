@@ -1,0 +1,50 @@
+<!-- settings.html — НОВЫЙ ФАЙЛ (создай) -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Настройки — Vistora</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">... (скопируй header из index.html) ...</header>
+<aside class="sidebar">... (скопируй sidebar из index.html, только активная ссылка на Настройки) ...</aside>
+
+<main class="main-content" style="margin-left:260px; padding:100px 40px;">
+    <div style="max-width:900px; margin:auto; background:#111; border-radius:24px; padding:50px;">
+        <h1 style="font-family:'Playfair Display',serif; font-size:42px; margin-bottom:30px;">⚙️ Настройки аккаунта</h1>
+        
+        <div id="adminSection" style="display:none;">
+            <h2 style="color:#ffd700;">🔧 Админ-панель</h2>
+            <p>Здесь будут все пользователи, видео и статистика (в следующей версии добавим загрузку).</p>
+            <button onclick="alert('Админ-функции работают! Скоро добавим загрузку видео и управление пользователями')" 
+                    style="padding:14px 32px; background:#ff0055; color:white; border:none; border-radius:30px; font-size:16px;">
+                Управление пользователями
+            </button>
+        </div>
+        
+        <div id="userSection">
+            <h3>👤 Мои данные</h3>
+            <div id="userInfo"></div>
+        </div>
+    </div>
+</main>
+
+<script src="script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    updateHeader();
+    const user = getCurrentUser();
+    if (user) {
+        document.getElementById('userInfo').innerHTML = `
+            <p><strong>Имя:</strong> ${user.username}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+        `;
+        if (user.username === 'admin' || user.username.toLowerCase() === 'islam') {
+            document.getElementById('adminSection').style.display = 'block';
+        }
+    }
+});
+</script>
+</body>
+</html>

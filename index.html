@@ -1,84 +1,139 @@
-<!-- index.html — ОБНОВЛЁННЫЙ (замени полностью) -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Vistora — Элитный видеохостинг</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vistora — Видеохостинг для России</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Премиум-шрифты (Inter + Playfair) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-<header class="header">
-    <div class="logo">Vistora</div>
-    <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Поиск по видео...">
-        <button class="search-btn">🔎</button>
+    <!-- Шапка сайта -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <i class="fas fa-play-circle"></i>
+                Vistora
+            </a>
+        </div>
+        
+        <div class="search-container">
+            <form class="search-form" id="searchForm">
+                <input type="text" placeholder="Поиск на Vistora" id="searchInput">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            <button class="mic-btn"><i class="fas fa-microphone"></i></button>
+        </div>
+        
+        <div class="header-right">
+            <button class="create-btn">
+                <i class="fas fa-video"></i>
+                <span>Создать</span>
+            </button>
+            <button class="notifications-btn">
+                <i class="fas fa-bell"></i>
+            </button>
+            <div class="user-avatar" id="userAvatar">
+                <img src="https://via.placeholder.com/32" alt="User">
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контейнер -->
+    <div class="app-container">
+        <!-- Боковое меню -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <a href="trending.html" class="nav-item">
+                    <i class="fas fa-fire"></i>
+                    <span>В тренде</span>
+                </a>
+                <a href="subscriptions.html" class="nav-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Подписки</span>
+                </a>
+                <hr class="sidebar-divider">
+                <a href="library.html" class="nav-item">
+                    <i class="fas fa-folder"></i>
+                    <span>Библиотека</span>
+                </a>
+                <a href="history.html" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    <span>История</a>
+                </a>
+                <hr class="sidebar-divider">
+                <div class="sidebar-section">
+                    <h4>Категории</h4>
+                    <a href="#" class="nav-item" data-category="tech">
+                        <i class="fas fa-laptop"></i>
+                        <span>Технологии</span>
+                    </a>
+                    <a href="#" class="nav-item" data-category="music">
+                        <i class="fas fa-music"></i>
+                        <span>Музыка</span>
+                    </a>
+                    <a href="#" class="nav-item" data-category="games">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Игры</span>
+                    </a>
+                    <a href="#" class="nav-item" data-category="news">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Новости</span>
+                    </a>
+                    <a href="#" class="nav-item" data-category="sport">
+                        <i class="fas fa-futbol"></i>
+                        <span>Спорт</span>
+                    </a>
+                    <a href="#" class="nav-item" data-category="movies">
+                        <i class="fas fa-film"></i>
+                        <span>Фильмы</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Быстрые фильтры -->
+            <div class="filters-bar">
+                <button class="filter-chip active">Все</button>
+                <button class="filter-chip">Технологии</button>
+                <button class="filter-chip">Музыка</button>
+                <button class="filter-chip">Игры</button>
+                <button class="filter-chip">Новости</button>
+                <button class="filter-chip">Спорт</button>
+                <button class="filter-chip">Фильмы</button>
+                <button class="filter-chip">Обучение</button>
+            </div>
+
+            <!-- Сортировка -->
+            <div class="sort-section">
+                <span>Сортировать по:</span>
+                <button class="sort-btn active" data-sort="date">Новизне</button>
+                <button class="sort-btn" data-sort="views">Просмотрам</button>
+                <button class="sort-btn" data-sort="rating">Рейтингу</button>
+            </div>
+
+            <!-- Сетка видео -->
+            <div class="videos-grid" id="videosGrid">
+                <!-- Видео будут загружаться через JavaScript -->
+            </div>
+
+            <!-- Кнопка загрузить ещё -->
+            <button class="load-more-btn" id="loadMoreBtn">
+                <i class="fas fa-sync-alt"></i>
+                Загрузить ещё
+            </button>
+        </main>
     </div>
-    <div class="nav" id="nav"></div>
-</header>
 
-<aside class="sidebar">
-    <nav>
-        <a href="index.html" class="sidebar-link active">🏠 Главная</a>
-        <a href="#" class="sidebar-link">🔍 Поиск</a>
-        <a href="#" class="sidebar-link">📺 Короткие</a>
-        <a href="#" class="sidebar-link">📚 Подписки</a>
-        <hr>
-        <a href="#" class="sidebar-link">📜 История</a>
-        <a href="#" class="sidebar-link">❤️ Избранное</a>
-        <a href="#" class="sidebar-link">📥 Скачанные</a>
-        <hr>
-        <a href="profile.html" class="sidebar-link">👤 Вы</a>
-        <a href="settings.html" class="sidebar-link">⚙️ Настройки</a>
-    </nav>
-</aside>
-
-<main class="main-content">
-    <!-- Категории -->
-    <div class="categories">
-        <span class="category-chip active">Все</span>
-        <span class="category-chip">Программирование</span>
-        <span class="category-chip">Музыка</span>
-        <span class="category-chip">Игры</span>
-        <span class="category-chip">Новости</span>
-        <span class="category-chip">Спорт</span>
-        <span class="category-chip">Фильмы</span>
-    </div>
-
-    <!-- Сортировка (элитный стиль) -->
-    <div class="sort-bar">
-        <span>Сортировать:</span>
-        <select id="sortSelect">
-            <option value="new">Новизна</option>
-            <option value="popular">Популярность</option>
-            <option value="views">Просмотры</option>
-        </select>
-    </div>
-
-    <!-- Видео-сетка -->
-    <div class="video-grid" id="videoGrid"></div>
-</main>
-
-<script src="script.js"></script>
-<script>
-// Лёгкая сортировка прямо здесь (без изменения script.js)
-document.addEventListener('DOMContentLoaded', () => {
-    const sortSelect = document.getElementById('sortSelect');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', () => {
-            const cards = Array.from(document.querySelectorAll('.video-card'));
-            const value = sortSelect.value;
-            
-            if (value === 'new') cards.sort((a,b) => b.dataset.time - a.dataset.time);
-            else if (value === 'popular') cards.sort((a,b) => b.dataset.views - a.dataset.views);
-            else if (value === 'views') cards.sort((a,b) => b.dataset.views - a.dataset.views);
-            
-            const grid = document.getElementById('videoGrid');
-            cards.forEach(card => grid.appendChild(card));
-        });
-    }
-});
-</script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -2,64 +2,124 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация — Vistora</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-primary), #000);
+        }
+        
+        .auth-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-form {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .auth-form input {
+            padding: 15px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+        }
+        
+        .auth-form button {
+            padding: 15px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .auth-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-<header class="header">
-    <a href="index.html" class="logo">Vistora</a>
-    <div class="search-bar">
-        <input type="text" placeholder="Поиск по видео...">
-        <button class="search-btn">🔎</button>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>Регистрация в Vistora</h2>
+            
+            <form class="auth-form" onsubmit="register(event)">
+                <input type="text" placeholder="Имя" id="name" required>
+                <input type="email" placeholder="Email" id="email" required>
+                <input type="password" placeholder="Пароль" id="password" required>
+                <input type="password" placeholder="Подтвердите пароль" id="confirm" required>
+                <div class="error-message" id="error"></div>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+            
+            <div class="auth-links">
+                <a href="login.html">Уже есть аккаунт? Войти</a>
+            </div>
+        </div>
     </div>
-    <div class="nav" id="nav"></div>
-</header>
 
-<aside class="sidebar">
-    <nav>
-        <a href="index.html" class="sidebar-link">🏠 Главная</a>
-        <a href="#" class="sidebar-link">🔍 Поиск</a>
-        <a href="#" class="sidebar-link">📺 Короткие</a>
-        <a href="#" class="sidebar-link">📚 Подписки</a>
-        <hr>
-        <a href="#" class="sidebar-link">📜 История</a>
-        <a href="#" class="sidebar-link">❤️ Избранное</a>
-        <a href="#" class="sidebar-link">📥 Скачанные</a>
-        <hr>
-        <a href="login.html" class="sidebar-link">Войти</a>
-        <a href="register.html" class="sidebar-link active">Регистрация</a>
-    </nav>
-</aside>
-
-<main class="main-content" style="margin-left:260px; padding:120px 40px; text-align:center;">
-    <div style="max-width:420px; margin:auto; background:#111; padding:50px; border-radius:24px;">
-        <h1 style="font-size:36px; color:#ffd700;">Регистрация</h1>
-        <form id="regForm">
-            <input type="text" id="regUsername" placeholder="Имя пользователя" required style="width:100%; padding:14px; margin:12px 0; background:#222; border:none; border-radius:12px; color:white;">
-            <input type="email" id="regEmail" placeholder="Email" required style="width:100%; padding:14px; margin:12px 0; background:#222; border:none; border-radius:12px; color:white;">
-            <input type="password" id="regPass" placeholder="Пароль" required style="width:100%; padding:14px; margin:12px 0; background:#222; border:none; border-radius:12px; color:white;">
-            <button type="submit" style="width:100%; padding:14px; background:#ff0055; color:white; border:none; border-radius:30px; font-size:17px; margin-top:10px;">Зарегистрироваться</button>
-        </form>
-        <p style="margin-top:20px;">Уже есть аккаунт? <a href="login.html" style="color:#ff0055;">Войти</a></p>
-    </div>
-</main>
-
-<script src="script.js"></script>
-<script>
-document.getElementById('regForm').onsubmit = function(e) {
-    e.preventDefault();
-    const username = document.getElementById('regUsername').value;
-    const email = document.getElementById('regEmail').value;
-    const pass = document.getElementById('regPass').value;
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-    if (users.find(u => u.email === email)) return alert('❌ Такой email уже есть!');
-    const newUser = {id: Date.now(), username, email, password: pass, role: 'user'};
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    alert('🎉 Регистрация прошла успешно!');
-    location.href = 'index.html';
-};
-</script>
+    <script>
+        function register(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm').value;
+            
+            if (password !== confirm) {
+                document.getElementById('error').textContent = 'Пароли не совпадают';
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            if (users.find(u => u.email === email)) {
+                document.getElementById('error').textContent = 'Email уже используется';
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: password,
+                role: 'user',
+                avatar: 'https://via.placeholder.com/100',
+                joinDate: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            window.location.href = 'index.html';
+        }
+    </script>
 </body>
 </html>

@@ -655,75 +655,167 @@ body {
 .video-card {
     animation: fadeIn 0.5s ease forwards;
 }
-/* ===== УЛУЧШЕНИЯ ДЛЯ ТЕЛЕФОНОВ ===== */
-
-@media (max-width: 600px) {
-    /* Кнопка загрузить ещё на всю ширину */
-    .load-more-btn {
-        width: 100%;
-        margin: 20px 0;
-        padding: 14px;
-        font-size: 16px;
+/* ===== ПОЛНАЯ ПЕРЕДЕЛКА ДЛЯ ТЕЛЕФОНОВ ===== */
+@media (max-width: 768px) {
+    
+    /* 1. ШАПКА — компактная */
+    .header {
+        padding: 8px 10px;
+        height: auto;
     }
-
-    /* Фильтры — горизонтальный скролл */
+    
+    .logo {
+        font-size: 18px;
+    }
+    
+    .logo i {
+        font-size: 22px;
+    }
+    
+    /* 2. ПОИСК — убираем микрофон, делаем строку меньше */
+    .search-container {
+        max-width: 200px;
+    }
+    
+    .mic-btn {
+        display: none; /* микрофон не нужен на телефоне */
+    }
+    
+    .search-form input {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+    
+    .search-form button {
+        padding: 0 10px;
+    }
+    
+    /* 3. ПРАВАЯ ЧАСТЬ — только иконки */
+    .create-btn span {
+        display: none;
+    }
+    
+    .create-btn {
+        padding: 6px 10px;
+    }
+    
+    .notifications-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+    
+    /* 4. БОКОВОЕ МЕНЮ — убираем совсем, потом сделаем бургер */
+    .sidebar {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding: 70px 10px 20px;
+    }
+    
+    /* 5. ФИЛЬТРЫ — горизонтальный скролл */
     .filters-bar {
         display: flex;
         flex-wrap: nowrap;
         overflow-x: auto;
-        gap: 8px;
+        gap: 6px;
         padding: 10px 0;
+        margin: 0 -10px;
+        padding-left: 10px;
         -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; /* для Firefox */
+        scrollbar-width: none;
     }
-
+    
     .filters-bar::-webkit-scrollbar {
-        display: none; /* для Chrome/Safari */
+        display: none;
     }
-
+    
     .filter-chip {
         flex: 0 0 auto;
-        padding: 10px 16px;
-        font-size: 14px;
+        padding: 8px 14px;
+        font-size: 13px;
+        white-space: nowrap;
     }
-
-    /* Карточки видео — больше отступов */
+    
+    /* 6. СОРТИРОВКА — компактнее */
+    .sort-section {
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0;
+    }
+    
+    .sort-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    /* 7. СЕТКА ВИДЕО — 1 колонка */
+    .videos-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    /* 8. КАРТОЧКА ВИДЕО — крупнее */
     .video-card {
-        margin-bottom: 15px;
+        margin-bottom: 5px;
     }
-
+    
     .video-title {
         font-size: 16px;
-        margin-bottom: 8px;
+        font-weight: 600;
+        margin-bottom: 6px;
     }
-
+    
     .video-channel {
         font-size: 14px;
     }
-
+    
     .video-stats {
         font-size: 13px;
     }
-
-    /* Шапка — чуть компактнее */
-    .header {
-        padding: 10px;
+    
+    .video-duration {
+        font-size: 11px;
+        padding: 3px 6px;
     }
-
-    .logo {
-        font-size: 20px;
+    
+    /* 9. КНОПКА ЗАГРУЗИТЬ ЕЩЁ — на всю ширину */
+    .load-more-btn {
+        width: 100%;
+        margin: 20px 0;
+        padding: 12px;
+        font-size: 15px;
     }
+}
 
-    .create-btn span {
-        display: none; /* оставляем только иконку */
+/* ===== ДЛЯ СОВСЕМ МАЛЕНЬКИХ ТЕЛЕФОНОВ ===== */
+@media (max-width: 480px) {
+    .search-container {
+        max-width: 150px;
     }
-
-    .create-btn {
-        padding: 8px;
+    
+    .video-title {
+        font-size: 15px;
     }
-
-    .user-avatar {
-        width: 32px;
-        height: 32px;
+    
+    .filter-chip {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .sort-section span {
+        font-size: 13px;
+    }
+    
+    .sort-btn {
+        padding: 5px 10px;
+        font-size: 12px;
     }
 }

@@ -1,215 +1,271 @@
-const API_URL = 'https://vistora-api.bannop2007.workers.dev';
-
+const API_URL = 'https://vistora-api.islamov2007islam.workers.dev';
 let currentUser = null;
 let videos = [];
-let currentFilter = 'all';
-let currentSort = 'date';
-let displayedVideos = 6;
+let comments = [];
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadUser();
-    await loadVideos();
-    setupEventListeners();
-});
-
+// ===== ПОЛЬЗОВАТЕЛЬ =====
 async function loadUser() {
     const token = localStorage.getItem('token');
-    if (token) {
-        try {
-            const response = await fetch(`${API_URL}/api/user`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (response.ok) {
-                currentUser = await response.json();
-                updateUserAvatar();
-            }
-        } catch (error) {
-            console.error('Ошибка загрузки пользователя:', error);
-        }
-    }
-}
+    if (!token) return;
 
-function updateUserAvatar() {
-    if (currentUser) {
-        const avatar = document.querySelector('.user-avatar img');
-        if (avatar) {
-            avatar.src = currentUser.avatar || 'https://via.placeholder.com/32';
-        }
-    }
-}
-
-async function loadVideos() {
     try {
-        const response = await fetch(`${API_URL}/api/videos`);
-        if (response.ok) {
-            videos = await response.json();
-            displayVideos();
+        const res = await fetch(`${API_URL}/api/user`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            currentUser = await res.json();
+            updateUIForUser();
         }
     } catch (error) {
-        console.error('Ошибка загрузки видео:', error);
-        loadDemoVideos();
+        console.error('Ошибка загрузки пользователя:', error);
     }
 }
 
-function loadDemoVideos() {
-    videos = [
+function updateUIForUser() {
+    if (currentUser?.avatar) {
+        document.querySelectorAll('.user-avatar img').forEach(img => {
+            img.src = currentUser.avatar;
+        });
+    }
+    
+    // Показываем админ-ссылку если нужно
+    if (currentUser?.role === 'admin') {
+        const adminLink = document.createElement('a');
+        adminLink.href = 'admin.html';
+        adminLink.className = 'nav-item';
+        adminLink.innerHTML = '<i class="fas fa-cog"></i><span>Админка</span>';
+        document.querySelector('.sidebar-nav')?.appendChild(adminLink);
+    }
+}
+
+// ===== ВИДЕО =====
+async function loadVideos(category = 'all', sort = 'date') {
+    try {
+        let url = `${API_URL}/api/videos`;
+        if (category !== 'all') url += `?category=${category}`;
+        
+        const res = await fetch(url);
+        if (res.ok) {
+            videos = await res.json();
+        } else {
+            videos = getDemoVideos();
+        }
+    } catch {
+        videos = getDemoVideos();
+    }
+    
+    sortVideos(sort);
+    return videos;
+}
+
+function getDemoVideos() {
+    return [
         {
             id: 1,
-            title: "iPhone 15 Pro Max — Обзор",
+            title: "iPhone 15 Pro Max — Полный обзор",
             channel: "TechMaster",
-            views: "125K",
+            channelIcon: "https://via.placeholder.com/36/ff0000",
+            views: "1.2M",
             date: "2025-02-15",
             duration: "12:34",
-            thumbnail: "https://via.placeholder.com/320x180/ff0000/ffffff?text=iPhone",
+            thumbnail: "https://img.youtube.com/vi/0pI5jvY4Tgs/maxresdefault.jpg",
             category: "tech"
         },
         {
             id: 2,
-            title: "CS2 — Гайд для новичков",
+            title: "CS2 — Гайд для новичков 2025",
             channel: "GamePro",
-            views: "89K",
+            channelIcon: "https://via.placeholder.com/36/00ff00",
+            views: "890K",
             date: "2025-02-14",
             duration: "25:10",
-            thumbnail: "https://via.placeholder.com/320x180/00ff00/ffffff?text=CS2",
+            thumbnail: "https://img.youtube.com/vi/edYCtaNueQY/maxresdefault.jpg",
             category: "games"
         }
     ];
-    displayVideos();
 }
 
-function displayVideos() {
-    const grid = document.getElementById('videosGrid');
-    if (!grid) return;
-
-    let filteredVideos = [...videos];
-    
-    if (currentFilter !== 'all') {
-        filteredVideos = filteredVideos.filter(v => v.category === currentFilter);
-    }
-    
-    filteredVideos.sort((a, b) => {
-        switch(currentSort) {
-            case 'date': return new Date(b.date) - new Date(a.date);
-            case 'views': return parseInt(b.views) - parseInt(a.views);
-            default: return 0;
+function sortVideos(sortBy) {
+    videos.sort((a, b) => {
+        if (sortBy === 'date') {
+            return new Date(b.date) - new Date(a.date);
+        } else if (sortBy === 'views') {
+            const viewsA = parseInt(a.views) || 0;
+            const viewsB = parseInt(b.views) || 0;
+            return viewsB - viewsA;
         }
+        return 0;
     });
+}
 
-    const videosToShow = filteredVideos.slice(0, displayedVideos);
-    
-    grid.innerHTML = videosToShow.map(video => `
+function displayVideos(videosToShow, containerId = 'videosGrid') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = videosToShow.map(video => `
         <a href="video.html?id=${video.id}" class="video-card">
             <div class="video-thumbnail">
-                <img src="${video.thumbnail}" alt="${video.title}">
+                <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
                 <span class="video-duration">${video.duration}</span>
             </div>
             <div class="video-info">
-                <h3 class="video-title">${video.title}</h3>
-                <div class="video-channel">${video.channel}</div>
-                <div class="video-stats">
-                    <span>${video.views} просмотров</span>
-                    <span>•</span>
-                    <span>${getTimeAgo(video.date)}</span>
+                <div class="video-channel-icon">
+                    <img src="${video.channelIcon || 'https://via.placeholder.com/36'}" alt="">
+                </div>
+                <div class="video-details">
+                    <h3 class="video-title">${video.title}</h3>
+                    <div class="video-channel">${video.channel}</div>
+                    <div class="video-stats">
+                        <span>${video.views} просмотров</span>
+                        <span class="separator">•</span>
+                        <span>${formatDate(video.date)}</span>
+                    </div>
                 </div>
             </div>
         </a>
     `).join('');
 }
 
-function getTimeAgo(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-    
-    if (diff === 0) return 'сегодня';
-    if (diff === 1) return 'вчера';
-    if (diff < 7) return `${diff} дня назад`;
-    return date.toLocaleDateString();
-}
-
-function setupEventListeners() {
-    document.querySelectorAll('.filter-chip').forEach(chip => {
-        chip.addEventListener('click', (e) => {
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-            e.target.classList.add('active');
-            currentFilter = e.target.dataset.category;
-            displayedVideos = 6;
-            displayVideos();
-        });
-    });
-
-    document.querySelectorAll('.sort-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            currentSort = e.target.dataset.sort;
-            displayVideos();
-        });
-    });
-
-    document.getElementById('loadMoreBtn')?.addEventListener('click', () => {
-        displayedVideos += 6;
-        displayVideos();
-    });
-
-    document.getElementById('menuToggle')?.addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('closed');
-    });
-
-    document.getElementById('searchForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const query = document.getElementById('searchInput').value;
-        if (query) {
-            window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+// ===== КОММЕНТАРИИ =====
+async function loadComments(videoId) {
+    try {
+        const res = await fetch(`${API_URL}/api/comments/${videoId}`);
+        if (res.ok) {
+            comments = await res.json();
         }
-    });
+    } catch {
+        comments = [];
+    }
+    return comments;
 }
 
+async function addComment(videoId, text) {
+    if (!currentUser) {
+        alert('Войдите, чтобы комментировать');
+        return false;
+    }
+
+    try {
+        const res = await fetch(`${API_URL}/api/comments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                videoId,
+                content: text,
+                userId: currentUser.id
+            })
+        });
+        return res.ok;
+    } catch {
+        return false;
+    }
+}
+
+function displayComments(comments, containerId = 'commentsList') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (comments.length === 0) {
+        container.innerHTML = '<p class="no-comments">Нет комментариев. Будьте первым!</p>';
+        return;
+    }
+
+    container.innerHTML = comments.map(c => `
+        <div class="comment">
+            <img src="${c.avatar || 'https://via.placeholder.com/40'}" class="comment-avatar">
+            <div class="comment-content">
+                <strong>${c.username}</strong>
+                <p>${c.content}</p>
+                <small>${formatDate(c.created_at)}</small>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ===== РЕГИСТРАЦИЯ/ВХОД =====
 async function registerUser(username, email, password) {
     try {
-        const response = await fetch(`${API_URL}/api/register`, {
+        const res = await fetch(`${API_URL}/api/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, email, password })
         });
         
-        if (response.ok) {
-            const data = await response.json();
+        const data = await res.json();
+        if (res.ok) {
             localStorage.setItem('token', data.token);
-            window.location.href = 'index.html';
+            currentUser = data.user;
             return { success: true };
-        } else {
-            const error = await response.json();
-            return { success: false, error: error.message };
         }
-    } catch (error) {
+        return { success: false, error: data.message };
+    } catch {
         return { success: false, error: 'Ошибка соединения' };
     }
 }
 
 async function loginUser(email, password) {
     try {
-        const response = await fetch(`${API_URL}/api/login`, {
+        const res = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         });
         
-        if (response.ok) {
-            const data = await response.json();
+        const data = await res.json();
+        if (res.ok) {
             localStorage.setItem('token', data.token);
-            window.location.href = 'index.html';
+            currentUser = data.user;
             return { success: true };
-        } else {
-            const error = await response.json();
-            return { success: false, error: error.message };
         }
-    } catch (error) {
+        return { success: false, error: data.message };
+    } catch {
         return { success: false, error: 'Ошибка соединения' };
     }
 }
 
 function logout() {
     localStorage.removeItem('token');
+    currentUser = null;
     window.location.href = 'index.html';
 }
+
+// ===== ВСПОМОГАТЕЛЬНЫЕ =====
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'сегодня';
+    if (diffDays === 1) return 'вчера';
+    if (diffDays < 7) return `${diffDays} дня назад`;
+    return date.toLocaleDateString('ru-RU');
+}
+
+// ===== ИНИЦИАЛИЗАЦИЯ =====
+document.addEventListener('DOMContentLoaded', () => {
+    loadUser();
+    
+    // Меню-бургер
+    const menuBtn = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    menuBtn?.addEventListener('click', () => {
+        sidebar?.classList.toggle('closed');
+        if (window.innerWidth <= 1024) {
+            sidebar?.classList.toggle('mobile-open');
+        }
+    });
+    
+    // Поиск
+    const searchForm = document.getElementById('searchForm');
+    searchForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const query = document.getElementById('searchInput')?.value.trim();
+        if (query) {
+            window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+        }
+    });
+});

@@ -10,57 +10,30 @@
 <body>
     <header class="header">
         <div class="header-left">
-            <button class="menu-btn" id="menuToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <a href="index.html" class="logo">
-                <i class="fas fa-play-circle"></i>
-                <span>Vistora</span>
-            </a>
+            <button class="menu-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
+            <a href="index.html" class="logo"><i class="fas fa-play-circle"></i><span>Vistora</span></a>
         </div>
-        
         <div class="search-container">
             <form class="search-form" id="searchForm">
                 <input type="text" placeholder="Поиск на Vistora" id="searchInput">
                 <button type="submit"><i class="fas fa-search"></i></button>
             </form>
         </div>
-        
         <div class="header-right">
-            <button class="create-btn" onclick="location.href='upload.html'">
-                <i class="fas fa-video"></i>
-                <span>Создать</span>
-            </button>
-            <div class="user-avatar" id="userAvatar" onclick="location.href='profile.html'">
-                <img src="https://via.placeholder.com/32" alt="User">
-            </div>
+            <button class="create-btn" onclick="location.href='upload.html'"><i class="fas fa-video"></i><span>Создать</span></button>
+            <div class="user-avatar" id="userAvatar" onclick="location.href='profile.html'"><img src="https://via.placeholder.com/32" alt="User"></div>
         </div>
     </header>
 
     <div class="app-container">
         <aside class="sidebar" id="sidebar">
             <nav class="sidebar-nav">
-                <a href="index.html" class="nav-item active">
-                    <i class="fas fa-home"></i>
-                    <span>Главная</span>
-                </a>
-                <a href="trending.html" class="nav-item">
-                    <i class="fas fa-fire"></i>
-                    <span>В тренде</span>
-                </a>
-                <a href="subscriptions.html" class="nav-item">
-                    <i class="fas fa-bell"></i>
-                    <span>Подписки</span>
-                </a>
+                <a href="index.html" class="nav-item active"><i class="fas fa-home"></i><span>Главная</span></a>
+                <a href="trending.html" class="nav-item"><i class="fas fa-fire"></i><span>В тренде</span></a>
+                <a href="subscriptions.html" class="nav-item"><i class="fas fa-bell"></i><span>Подписки</span></a>
                 <hr class="sidebar-divider">
-                <a href="library.html" class="nav-item">
-                    <i class="fas fa-folder"></i>
-                    <span>Библиотека</span>
-                </a>
-                <a href="history.html" class="nav-item">
-                    <i class="fas fa-history"></i>
-                    <span>История</span>
-                </a>
+                <a href="library.html" class="nav-item"><i class="fas fa-folder"></i><span>Библиотека</span></a>
+                <a href="history.html" class="nav-item"><i class="fas fa-history"></i><span>История</span></a>
             </nav>
         </aside>
 
@@ -83,13 +56,161 @@
             </div>
 
             <div class="videos-grid" id="videosGrid"></div>
-
-            <button class="load-more-btn" id="loadMoreBtn">
-                <i class="fas fa-sync-alt"></i> Загрузить ещё
-            </button>
+            <button class="load-more-btn" id="loadMoreBtn"><i class="fas fa-sync-alt"></i> Загрузить ещё</button>
         </main>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const API_URL = 'https://vistora-api.islamov2007islam.workers.dev';
+        let videos = [];
+        let currentFilter = 'all';
+        let currentSort = 'date';
+        let displayedVideos = 6;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadVideos();
+        });
+
+        async function loadVideos() {
+            try {
+                const response = await fetch(`${API_URL}/api/videos`);
+                if (response.ok) {
+                    videos = await response.json();
+                } else {
+                    throw new Error('API не ответил');
+                }
+            } catch (error) {
+                console.warn('Использую тестовые видео');
+                videos = getDemoVideos();
+            }
+            displayVideos();
+        }
+
+        function getDemoVideos() {
+            return [
+                {
+                    id: 1,
+                    title: "iPhone 15 Pro Max — Обзор",
+                    channel: "TechMaster",
+                    views: "1.2M",
+                    date: "2025-02-15",
+                    duration: "12:34",
+                    thumbnail: "https://img.youtube.com/vi/0pI5jvY4Tgs/maxresdefault.jpg",
+                    category: "tech"
+                },
+                {
+                    id: 2,
+                    title: "CS2 — Гайд для новичков",
+                    channel: "GamePro",
+                    views: "890K",
+                    date: "2025-02-14",
+                    duration: "25:10",
+                    thumbnail: "https://img.youtube.com/vi/edYCtaNueQY/maxresdefault.jpg",
+                    category: "games"
+                },
+                {
+                    id: 3,
+                    title: "MORGENSHTERN — НОВЫЙ ТРЕК",
+                    channel: "Music Zone",
+                    views: "3.4M",
+                    date: "2025-02-10",
+                    duration: "3:45",
+                    thumbnail: "https://img.youtube.com/vi/q9sVKVSzI_M/maxresdefault.jpg",
+                    category: "music"
+                },
+                {
+                    id: 4,
+                    title: "Зенит — Спартак: Обзор",
+                    channel: "Sport TV",
+                    views: "2.1M",
+                    date: "2025-02-08",
+                    duration: "15:45",
+                    thumbnail: "https://img.youtube.com/vi/RvEzj-ZvH-c/maxresdefault.jpg",
+                    category: "sport"
+                },
+                {
+                    id: 5,
+                    title: "Дюна 2 — Обзор фильма",
+                    channel: "CinemaTime",
+                    views: "4.5M",
+                    date: "2025-02-05",
+                    duration: "22:18",
+                    thumbnail: "https://img.youtube.com/vi/WAY7wj6Ee0c/maxresdefault.jpg",
+                    category: "movies"
+                },
+                {
+                    id: 6,
+                    title: "Новости России и мира",
+                    channel: "News24",
+                    views: "1.1M",
+                    date: "2025-02-12",
+                    duration: "45:30",
+                    thumbnail: "https://img.youtube.com/vi/5_PD_5zZ7nU/maxresdefault.jpg",
+                    category: "news"
+                }
+            ];
+        }
+
+        function displayVideos() {
+            const grid = document.getElementById('videosGrid');
+            if (!grid) return;
+
+            let filteredVideos = [...videos];
+            if (currentFilter !== 'all') {
+                filteredVideos = filteredVideos.filter(v => v.category === currentFilter);
+            }
+
+            filteredVideos.sort((a, b) => {
+                switch(currentSort) {
+                    case 'date': return new Date(b.date) - new Date(a.date);
+                    case 'views': return parseInt(b.views) - parseInt(a.views);
+                    default: return 0;
+                }
+            });
+
+            const videosToShow = filteredVideos.slice(0, displayedVideos);
+            grid.innerHTML = videosToShow.map(video => `
+                <a href="video.html?id=${video.id}" class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+                        <span class="video-duration">${video.duration}</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">${video.title}</h3>
+                        <div class="video-channel">${video.channel}</div>
+                        <div class="video-stats">
+                            <span>${video.views} просмотров</span>
+                            <span>•</span>
+                            <span>${new Date(video.date).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.category;
+                displayedVideos = 6;
+                displayVideos();
+            });
+        });
+
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentSort = e.target.dataset.sort;
+                displayVideos();
+            });
+        });
+
+        document.getElementById('loadMoreBtn')?.addEventListener('click', () => {
+            displayedVideos += 6;
+            displayVideos();
+        });
+    </script>
 </body>
 </html>

@@ -6,36 +6,205 @@
     <title>Видео — Vistora</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .video-page {
+            max-width: 1400px;
+            margin: 80px auto 0;
+            padding: 20px;
+        }
+        .video-player-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: black;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .video-player-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .video-title-section {
+            margin-bottom: 20px;
+        }
+        .video-title-section h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .channel-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .channel-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .channel-details h3 {
+            margin-bottom: 5px;
+        }
+        .subscribe-btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .subscribe-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .action-btn:hover {
+            background: var(--bg-hover);
+        }
+        .action-btn.liked {
+            color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        .video-description {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
+        }
+        .comments-section {
+            margin-top: 30px;
+        }
+        .comment-form {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .comment-form input {
+            flex: 1;
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            color: var(--text-primary);
+        }
+        .comment-form button {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .comment {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 15px;
+            background: var(--bg-card);
+            border-radius: 12px;
+        }
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .comment-content {
+            flex: 1;
+        }
+        .comment-content strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .comment-content small {
+            color: var(--text-secondary);
+        }
+        .recommendations {
+            margin-top: 40px;
+        }
+        .recommendations h3 {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
         <div class="header-left">
-            <a href="index.html" class="logo">
-                <i class="fas fa-play-circle"></i>
-                Vistora
-            </a>
+            <button class="menu-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
+            <a href="index.html" class="logo"><i class="fas fa-play-circle"></i><span>Vistora</span></a>
+        </div>
+        <div class="search-container">
+            <form class="search-form" id="searchForm">
+                <input type="text" placeholder="Поиск" id="searchInput">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
         </div>
         <div class="header-right">
-            <div class="user-avatar" onclick="location.href='profile.html'">
-                <img src="https://via.placeholder.com/32" alt="User">
-            </div>
+            <button class="create-btn" onclick="location.href='upload.html'"><i class="fas fa-video"></i><span>Создать</span></button>
+            <div class="user-avatar" onclick="location.href='profile.html'"><img src="https://via.placeholder.com/32" alt="User"></div>
         </div>
     </header>
 
-    <div class="video-page" style="max-width: 1200px; margin: 80px auto 20px; padding: 0 20px;">
-        <div class="video-player-container" id="videoPlayer" style="position: relative; width: 100%; padding-top: 56.25%; background: black; border-radius: 12px; overflow: hidden;"></div>
+    <div class="video-page">
+        <div class="video-player-container" id="videoPlayer"></div>
         
-        <div style="margin-top: 20px;">
+        <div class="video-title-section">
             <h1 id="videoTitle">Загрузка...</h1>
             
-            <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0; padding: 20px 0; border-bottom: 1px solid var(--border-color);">
-                <div>
-                    <span id="videoViews">0 просмотров</span>
-                    <span>•</span>
-                    <span id="videoDate">сегодня</span>
+            <div class="video-meta">
+                <div class="channel-info">
+                    <div class="channel-avatar">
+                        <img src="" alt="" id="channelAvatar">
+                    </div>
+                    <div class="channel-details">
+                        <h3 id="channelName">Канал</h3>
+                        <span id="videoStats">0 просмотров • сегодня</span>
+                    </div>
+                    <button class="subscribe-btn" onclick="subscribe()">
+                        <i class="fas fa-bell"></i> Подписаться
+                    </button>
                 </div>
                 
-                <div style="display: flex; gap: 10px;">
+                <div class="action-buttons">
                     <button class="action-btn" onclick="likeVideo()">
                         <i class="fas fa-thumbs-up"></i>
                         <span id="likesCount">0</span>
@@ -44,128 +213,179 @@
                         <i class="fas fa-thumbs-down"></i>
                         <span id="dislikesCount">0</span>
                     </button>
-                </div>
-            </div>
-            
-            <div style="display: flex; gap: 15px; align-items: center; margin: 20px 0;">
-                <img src="" alt="" id="channelAvatar" style="width: 50px; height: 50px; border-radius: 50%;">
-                <div>
-                    <h3 id="channelName">Канал</h3>
-                    <button class="action-btn" onclick="subscribe()" style="background: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 20px;">
-                        Подписаться
+                    <button class="action-btn" onclick="shareVideo()">
+                        <i class="fas fa-share"></i> Поделиться
+                    </button>
+                    <button class="action-btn" onclick="saveVideo()">
+                        <i class="fas fa-bookmark"></i> Сохранить
                     </button>
                 </div>
             </div>
-            
-            <div class="video-description" id="videoDescription" style="background: var(--bg-secondary); padding: 15px; border-radius: 10px; margin: 20px 0;"></div>
         </div>
-        
-        <div style="margin-top: 40px;">
-            <h3>Комментарии</h3>
+
+        <div class="video-description" id="videoDescription"></div>
+
+        <div class="comments-section">
+            <h3>Комментарии <span id="commentsCount">0</span></h3>
             
-            <div style="display: flex; gap: 15px; margin: 20px 0;">
-                <img src="https://via.placeholder.com/40" style="width: 40px; height: 40px; border-radius: 50%;">
-                <input type="text" placeholder="Написать комментарий..." id="commentInput" style="flex: 1; padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-primary);">
-                <button onclick="addComment()" style="padding: 10px 20px; background: var(--primary-color); border: none; border-radius: 20px; color: white; cursor: pointer;">Отправить</button>
+            <div class="comment-form">
+                <img src="https://via.placeholder.com/40" class="comment-avatar" id="currentUserAvatar">
+                <input type="text" placeholder="Написать комментарий..." id="commentInput">
+                <button onclick="addComment()">Отправить</button>
             </div>
             
             <div id="commentsList"></div>
         </div>
+
+        <div class="recommendations">
+            <h3>Рекомендации</h3>
+            <div class="videos-grid" id="recommendations"></div>
+        </div>
     </div>
 
+    <script src="script.js"></script>
     <script>
         let currentVideo = null;
-        
-        function loadVideo() {
+        let videoComments = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const videoId = parseInt(urlParams.get('id'));
+            const videoId = urlParams.get('id');
             
-            const videos = JSON.parse(localStorage.getItem('videos') || '[]');
-            const comments = JSON.parse(localStorage.getItem('comments') || '[]');
-            
-            currentVideo = videos.find(v => v.id === videoId);
-            
+            if (!videoId) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            await loadVideo(videoId);
+            await loadComments(videoId);
+            await loadRecommendations(currentVideo?.category, videoId);
+        });
+
+        async function loadVideo(videoId) {
+            try {
+                const res = await fetch(`${API_URL}/api/videos/${videoId}`);
+                if (res.ok) {
+                    currentVideo = await res.json();
+                } else {
+                    // Берём из демо если нет в базе
+                    const demos = getDemoVideos();
+                    currentVideo = demos.find(v => v.id == videoId) || demos[0];
+                }
+            } catch {
+                const demos = getDemoVideos();
+                currentVideo = demos.find(v => v.id == videoId) || demos[0];
+            }
+
             if (!currentVideo) {
                 window.location.href = 'index.html';
                 return;
             }
-            
+
+            displayVideo();
+            trackView(videoId);
+        }
+
+        function displayVideo() {
             document.getElementById('videoTitle').textContent = currentVideo.title;
-            document.getElementById('videoViews').textContent = currentVideo.views + ' просмотров';
-            document.getElementById('videoDate').textContent = formatDate(currentVideo.date);
-            document.getElementById('videoDescription').textContent = currentVideo.description;
             document.getElementById('channelName').textContent = currentVideo.channel;
-            document.getElementById('channelAvatar').src = currentVideo.channelAvatar;
+            document.getElementById('channelAvatar').src = currentVideo.channelIcon || 'https://via.placeholder.com/50';
+            document.getElementById('videoStats').textContent = `${currentVideo.views} просмотров • ${formatDate(currentVideo.date)}`;
+            document.getElementById('videoDescription').textContent = currentVideo.description || 'Описание отсутствует';
             
-            if (currentVideo.videoUrl.includes('youtube')) {
-                document.getElementById('videoPlayer').innerHTML = `
-                    <iframe src="${currentVideo.videoUrl}" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
-                `;
-            } else {
-                document.getElementById('videoPlayer').innerHTML = `
-                    <video src="${currentVideo.videoUrl}" controls style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></video>
-                `;
+            // Встраиваем YouTube видео
+            let videoUrl = currentVideo.videoUrl || `https://www.youtube.com/embed/${currentVideo.id}`;
+            if (videoUrl.includes('youtu.be')) {
+                const id = videoUrl.split('/').pop();
+                videoUrl = `https://www.youtube.com/embed/${id}`;
             }
             
-            const videoComments = comments.filter(c => c.videoId === videoId);
+            document.getElementById('videoPlayer').innerHTML = `
+                <iframe src="${videoUrl}" frameborder="0" allowfullscreen></iframe>
+            `;
+        }
+
+        async function loadComments(videoId) {
+            videoComments = await loadComments(videoId);
             displayComments(videoComments);
+            document.getElementById('commentsCount').textContent = videoComments.length;
         }
-        
-        function displayComments(comments) {
-            document.getElementById('commentsList').innerHTML = comments.map(c => `
-                <div style="display: flex; gap: 15px; margin: 15px 0;">
-                    <img src="${c.avatar}" style="width: 40px; height: 40px; border-radius: 50%;">
-                    <div>
-                        <strong>${c.author}</strong>
-                        <p>${c.text}</p>
-                        <small style="color: var(--text-secondary);">${formatDate(c.date)}</small>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function addComment() {
+
+        async function addComment() {
+            if (!currentUser) {
+                alert('Войдите, чтобы комментировать');
+                window.location.href = 'login.html';
+                return;
+            }
+
             const input = document.getElementById('commentInput');
             const text = input.value.trim();
-            
             if (!text) return;
-            
-            const comments = JSON.parse(localStorage.getItem('comments') || '[]');
-            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-            
-            comments.push({
-                id: Date.now(),
-                videoId: currentVideo.id,
-                author: user.name || 'Гость',
-                avatar: user.avatar || 'https://via.placeholder.com/40',
-                text: text,
-                date: new Date().toISOString()
-            });
-            
-            localStorage.setItem('comments', JSON.stringify(comments));
-            input.value = '';
-            loadVideo();
+
+            const success = await addComment(currentVideo.id, text);
+            if (success) {
+                input.value = '';
+                await loadComments(currentVideo.id);
+            }
         }
-        
-        function likeVideo() {
-            const likes = JSON.parse(localStorage.getItem('likes') || '{}');
-            const key = `${currentVideo.id}_likes`;
-            likes[key] = (likes[key] || 0) + 1;
-            localStorage.setItem('likes', JSON.stringify(likes));
-            document.getElementById('likesCount').textContent = likes[key];
-        }
-        
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diff = Math.floor((now - date) / 86400000);
+
+        async function loadRecommendations(category, currentId) {
+            const all = await loadVideos();
+            const recommended = all
+                .filter(v => v.category === category && v.id != currentId)
+                .slice(0, 4);
             
-            if (diff === 0) return 'сегодня';
-            if (diff === 1) return 'вчера';
-            return `${diff} дней назад`;
+            displayVideos(recommended, 'recommendations');
         }
-        
-        loadVideo();
+
+        async function likeVideo() {
+            if (!currentUser) {
+                alert('Войдите, чтобы ставить лайки');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/api/videos/${currentVideo.id}/like`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                if (res.ok) {
+                    const count = document.getElementById('likesCount');
+                    count.textContent = parseInt(count.textContent) + 1;
+                }
+            } catch (error) {
+                console.error('Ошибка лайка:', error);
+            }
+        }
+
+        async function trackView(videoId) {
+            try {
+                await fetch(`${API_URL}/api/videos/${videoId}/view`, {
+                    method: 'POST'
+                });
+            } catch {}
+        }
+
+        function shareVideo() {
+            navigator.clipboard.writeText(window.location.href);
+            alert('Ссылка скопирована!');
+        }
+
+        function saveVideo() {
+            if (!currentUser) {
+                alert('Войдите, чтобы сохранять видео');
+                return;
+            }
+            alert('Добавлено в сохранённые');
+        }
+
+        function subscribe() {
+            if (!currentUser) {
+                alert('Войдите, чтобы подписываться');
+                return;
+            }
+            alert('Вы подписались на канал!');
+        }
     </script>
 </body>
 </html>
